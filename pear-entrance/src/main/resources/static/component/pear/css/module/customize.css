@@ -1,0 +1,13 @@
+/*是否推荐样式*/
+.recommend_false {
+	margin: 10px 0 10px 0;
+	font-size: 18px;
+	font-weight: 18;
+	color: gray;
+}
+.recommend_true {
+	margin: 10px 0 10px 0;
+	font-size: 18px;
+	font-weight: 18;
+	color: red;
+}

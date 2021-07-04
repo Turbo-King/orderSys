@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.system.mapper.DishesFoodMapper">
+
+    <resultMap type="com.pearadmin.system.domain.DishesFood" id="DishesFoodResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="introduction"    column="introduction"    />
+        <result property="details"    column="details"    />
+        <result property="recommend"    column="recommend"    />
+        <result property="pictureUrl"    column="picture_url"    />
+        <result property="price"    column="price"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDishesFoodVo">
+        select`id`,`name`,`introduction`,`details`,`recommend`,`picture_url`,`price`,`remark` from `dishes_food`
+    </sql>
+
+    <select id="selectDishesFoodList" parameterType="com.pearadmin.system.domain.DishesFood" resultMap="DishesFoodResult">
+        <include refid="selectDishesFoodVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and `name` like concat('%', #{name}, '%')</if>
+            <if test="introduction != null  and introduction != ''"> and `introduction` = #{introduction}</if>
+            <if test="details != null  and details != ''"> and `details` = #{details}</if>
+            <if test="recommend != null "> and `recommend` = #{recommend}</if>
+            <if test="pictureUrl != null  and pictureUrl != ''"> and `picture_url` = #{pictureUrl}</if>
+            <if test="price != null "> and `price` = #{price}</if>
+        </where>
+    </select>
+
+    <select id="selectDishesFoodById" parameterType="Long" resultMap="DishesFoodResult">
+        <include refid="selectDishesFoodVo"/>
+        where `id` = #{id}
+    </select>
+
+    <insert id="insertDishesFood" parameterType="com.pearadmin.system.domain.DishesFood" useGeneratedKeys="true" keyProperty="id">
+        insert into `dishes_food`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">`name`,</if>
+            <if test="introduction != null">`introduction`,</if>
+            <if test="details != null">`details`,</if>
+            <if test="recommend != null">`recommend`,</if>
+            <if test="pictureUrl != null">`picture_url`,</if>
+            <if test="price != null">`price`,</if>
+            <if test="remark != null">`remark`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="details != null">#{details},</if>
+            <if test="recommend != null">#{recommend},</if>
+            <if test="pictureUrl != null">#{pictureUrl},</if>
+            <if test="price != null">#{price},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDishesFood" parameterType="com.pearadmin.system.domain.DishesFood">
+        update `dishes_food`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">`name` = #{name},</if>
+            <if test="introduction != null">`introduction` = #{introduction},</if>
+            <if test="details != null">`details` = #{details},</if>
+            <if test="recommend != null">`recommend` = #{recommend},</if>
+            <if test="pictureUrl != null">`picture_url` = #{pictureUrl},</if>
+            <if test="price != null">`price` = #{price},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteDishesFoodById" parameterType="Long">
+        delete from `dishes_food` where `id` = #{id}
+    </delete>
+
+    <delete id="deleteDishesFoodByIds" parameterType="String">
+        delete from `dishes_food` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

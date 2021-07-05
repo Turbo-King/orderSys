@@ -33,8 +33,8 @@
 
                  <script type="text/html" id="tableBill-toolbar">
                      <button  sec:authorize="hasPermission('/dishes/tableBill/remove','dishes:tableBill:remove')"   class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" style="width: 90px">
-                         <i class="layui-icon layui-icon-rmb"></i>
-                         买单
+                         <i class="layui-icon layui-icon-delete"></i>
+                         清理订单
                      </button>
                  </script>
 
@@ -135,16 +135,18 @@
                  window.remove = function (obj) {
                      layer.confirm('该桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
                          layer.close(index);
-                         let loading = layer.load();
+                         obj.data.status = 1;
                          $.ajax({
-                             url: prefix + "remove/" + obj.data['orderId'],
+                             url: prefix+'update',
+                             data: JSON.stringify(obj.data),
                              dataType: 'json',
-                             type: 'delete',
+                             contentType: 'application/json',
+                             type: 'put',
                              success: function (result) {
-                                 layer.close(loading);
                                  if (result.success) {
-                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                         obj.del();
+                                     layer.msg("订单已推送至前台", {icon: 1, time: 1000}, function () {
+                                         parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                         table.reload("tableBill-table");
                                      });
                                  } else {
                                      layer.msg(result.msg, {icon: 2, time: 1000});
@@ -157,7 +159,7 @@
                  window.batchRemove = function (obj) {
                      let data = table.checkStatus(obj.config.id).data;
                      if (data.length === 0) {
-                         layer.msg("请选择需要买单的餐桌", {icon: 3, time: 1000});
+                         layer.msg("请选择需要清理的订单餐桌", {icon: 3, time: 1000});
                          return false;
                      }
                      let ids = "";
@@ -165,7 +167,7 @@
                          ids += data[i].orderId + ",";
                      }
                      ids = ids.substr(0, ids.length - 1);
-                     layer.confirm('这些桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
+                     layer.confirm('确定删除这些订单么？', {icon: 3, title: '提示'}, function (index) {
                          layer.close(index);
                          let loading = layer.load();
                          $.ajax({
@@ -190,6 +192,13 @@
                  window.refresh = function (param) {
                      table.reload('tableBill-table', {where: param});
                  }
+
+                 //日期选择器
+                 laydate.render({
+                     elem: '#expiredTimeDate',
+                     format: "yyyy-MM-dd HH:mm:ss"
+                 });
+
              })
          </script>
 </body>

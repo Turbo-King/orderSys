@@ -22,6 +22,17 @@ spring:
     # 是 否 检 查 流 程 定 义 文 件
     check-process-definitions: false
 
+
+  #jackson对响应回去的日期参数进行格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  #mvc接收参数时对日期进行格式化
+  mvc:
+    format:
+      date: yyyy-MM-dd HH:mm:ss
+
+
 # Mybatis 配 置
 mybatis:
   # 配 置 扫 描

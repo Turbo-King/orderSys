@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="include :: header('点餐订单列表')" />
+</head>
+<body class="pear-container">
+     <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId" class="layui-form">
+
+                    <div class="layui-form-item">
+                                <label class="layui-form-label">订单的桌号：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="tableId" placeholder="请输入订单的桌号" class="layui-input"  lay-required/>
+                        </div>
+                        <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="tableBill-query">
+                        <i class="layui-icon layui-icon-search"></i>
+                        查询
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        <i class="layui-icon layui-icon-refresh"></i>
+                        重置
+                    </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+     </div>
+         <div class="layui-card">
+             <div class="layui-card-body">
+                 <table id="tableBill-table" lay-filter="tableBill-table"></table>
+
+                 <script type="text/html" id="tableBill-toolbar">
+                     <button  sec:authorize="hasPermission('/dishes/tableBill/remove','dishes:tableBill:remove')"   class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" style="width: 90px">
+                         <i class="layui-icon layui-icon-rmb"></i>
+                         买单
+                     </button>
+                 </script>
+
+                 <script type="text/html" id="tableBill-bar">
+                     <button  sec:authorize="hasPermission('/dishes/tableBill/remove','dishes:tableBill:remove')"   class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove" style="width: 100%">
+                         <i class="layui-icon layui-icon-rmb"></i>
+                         买单
+                     </button>
+                 </script>
+             </div>
+         </div>
+    <th:block th:include="include :: footer" />
+         <script>
+             layui.use(['table', 'form', 'jquery','dictionary'], function () {
+                 let table = layui.table;
+                 let form = layui.form;
+                 let $ = layui.jquery;
+
+                 let prefix = "/dishes/tableBill/";
+
+                 let cols = [
+                     [
+                         {type: 'checkbox'},
+                         {
+                             field: 'orderId',
+                             title: '订单编号',
+                             hide:true
+                         },
+                         {
+                             field: 'tableId',
+                             title: '订单的桌号',
+                         },
+                         {
+                             field: 'waiterRealName',
+                             title: '点餐服务员'
+                         },
+                         {
+                             field: 'waiterId',
+                             title: '订单点餐员编号',
+                             hide:true
+                         },
+                        {
+                             field: 'orderBeginTime',
+                             title: '订单开始时间'
+                        },
+                        {
+                             field: 'orderEndTime',
+                             title: '订单结束时间',
+                             hide:true
+                        },
+                        {
+                             field: 'orderState',
+                             title: '订单状态（0正在用餐，1准备结账，2已经结账，3免单订单）',
+                             hide:true
+                        },
+                        {
+                             field: 'remark',
+                             title: '备注',
+                             hide:true
+                        },
+                         {title: '操作', toolbar: '#tableBill-bar', align: 'center', width: 120}
+                     ]
+                 ]
+
+                 table.render({
+                     elem: '#tableBill-table',
+                     url: prefix + 'data',
+                     page: true,
+                     cols: cols,
+                     skin: 'line',
+                     toolbar: '#tableBill-toolbar',
+                     defaultToolbar: [{
+                         layEvent: 'refresh',
+                         icon: 'layui-icon-refresh',
+                     }, 'filter', 'print', 'exports']
+                 });
+
+                 table.on('tool(tableBill-table)', function (obj) {
+                     if (obj.event === 'remove') {
+                         window.remove(obj);
+                     }
+                 });
+
+                 table.on('toolbar(tableBill-table)', function (obj) {
+                     if (obj.event === 'refresh') {
+                         window.refresh();
+                     } else if (obj.event === 'batchRemove') {
+                         window.batchRemove(obj);
+                     }
+                 });
+
+                 form.on('submit(tableBill-query)', function (data) {
+                     table.reload('tableBill-table', {where: data.field})
+                     return false;
+                 });
+
+
+                 window.remove = function (obj) {
+                     layer.confirm('该桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
+                         layer.close(index);
+                         let loading = layer.load();
+                         $.ajax({
+                             url: prefix + "remove/" + obj.data['orderId'],
+                             dataType: 'json',
+                             type: 'delete',
+                             success: function (result) {
+                                 layer.close(loading);
+                                 if (result.success) {
+                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                         obj.del();
+                                     });
+                                 } else {
+                                     layer.msg(result.msg, {icon: 2, time: 1000});
+                                 }
+                             }
+                         })
+                     });
+                 }
+
+                 window.batchRemove = function (obj) {
+                     let data = table.checkStatus(obj.config.id).data;
+                     if (data.length === 0) {
+                         layer.msg("请选择需要买单的餐桌", {icon: 3, time: 1000});
+                         return false;
+                     }
+                     let ids = "";
+                     for (let i = 0; i < data.length; i++) {
+                         ids += data[i].orderId + ",";
+                     }
+                     ids = ids.substr(0, ids.length - 1);
+                     layer.confirm('这些桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
+                         layer.close(index);
+                         let loading = layer.load();
+                         $.ajax({
+                             url: prefix + "batchRemove",
+                             dataType: 'json',
+                             data: {"ids":ids},
+                             type: 'delete',
+                             success: function (result) {
+                                 layer.close(loading);
+                                 if (result.success) {
+                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                         table.reload('tableBill-table');
+                                     });
+                                 } else {
+                                     layer.msg(result.msg, {icon: 2, time: 1000});
+                                 }
+                             }
+                         })
+                     });
+                 }
+
+                 window.refresh = function (param) {
+                     table.reload('tableBill-table', {where: param});
+                 }
+             })
+         </script>
+</body>
+</html>

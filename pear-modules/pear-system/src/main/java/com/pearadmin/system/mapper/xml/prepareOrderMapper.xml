@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.system.mapper.prepareOrderMapper">
+
+    <resultMap type="com.pearadmin.system.domain.prepareOrder" id="prepareOrderResult">
+        <result property="odId"    column="od_id"    />
+        <result property="orderReference"    column="order_reference"    />
+        <result property="tableId"    column="table_id"    />
+        <result property="dishes"    column="dishes"    />
+        <result property="dishesName"    column="name"    />
+        <result property="num"    column="num"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectprepareOrderVo">
+        select `order_details`.`od_id`,`dishes_food`.`name`,`order_details`.`order_reference`,`dishes_order`.`table_id`,`order_details`.`dishes`,`order_details`.`num`,`order_details`.`status`
+        from `order_details`,`dishes_food`,`dishes_order`
+    </sql>
+
+    <select id="selectprepareOrderList" parameterType="com.pearadmin.system.domain.prepareOrder" resultMap="prepareOrderResult">
+        <include refid="selectprepareOrderVo"/>
+        <where>
+            and `dishes_order`.`order_id` = `order_details`.`order_reference`
+            and `order_details`.`dishes` = `dishes_food`.`id`
+            and `order_details`.`status` in (0,1)
+            <if test="tableId != null "> and `dishes_order`.`table_id` = #{tableId}</if>
+            <if test="orderReference != null "> and `order_reference` = #{orderReference}</if>
+            <if test="dishes != null "> and `dishes` = #{dishes}</if>
+            <if test="num != null "> and `num` = #{num}</if>
+        </where>
+    </select>
+
+    <select id="selectprepareOrderById" parameterType="Long" resultMap="prepareOrderResult">
+        <include refid="selectprepareOrderVo"/>
+        where `od_id` = #{odId}
+    </select>
+
+    <insert id="insertprepareOrder" parameterType="com.pearadmin.system.domain.prepareOrder" useGeneratedKeys="true" keyProperty="odId">
+        insert into `order_details`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderReference != null">`order_reference`,</if>
+            <if test="dishes != null">`dishes`,</if>
+            <if test="num != null">`num`,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderReference != null">#{orderReference},</if>
+            <if test="dishes != null">#{dishes},</if>
+            <if test="num != null">#{num},</if>
+         </trim>
+    </insert>
+
+    <update id="updateprepareOrder" parameterType="com.pearadmin.system.domain.prepareOrder">
+        update `order_details`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderReference != null">`order_reference` = #{orderReference},</if>
+            <if test="dishes != null">`dishes` = #{dishes},</if>
+            <if test="num != null">`num` = #{num},</if>
+            <if test="status != null">`status` = #{status},</if>
+        </trim>
+        where `od_id` = #{odId}
+    </update>
+
+    <delete id="deleteprepareOrderById" parameterType="Long">
+        delete from `order_details` where `od_id` = #{odId}
+    </delete>
+
+    <delete id="deleteprepareOrderByIds" parameterType="String">
+        delete from `order_details` where `od_id` in
+        <foreach item="odId" collection="array" open="(" separator="," close=")">
+            #{odId}
+        </foreach>
+    </delete>
+
+</mapper>

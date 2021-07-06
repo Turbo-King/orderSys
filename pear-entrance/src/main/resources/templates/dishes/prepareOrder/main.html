@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="include :: header('点餐订单列表')" />
+    <th:block th:include="include :: header('后厨备餐表列表')" />
 </head>
 <body class="pear-container">
      <div class="layui-card">
         <div class="layui-card-body">
             <div class="col-sm-12 search-collapse">
                 <form id="formId" class="layui-form">
-
                     <div class="layui-form-item">
-                                <label class="layui-form-label">订单的桌号：</label>
+                            <label class="layui-form-label">订单餐桌：</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="tableId" placeholder="请输入订单的桌号" class="layui-input"  lay-required/>
+                            <input type="text" name="tableId" placeholder="请输入订单餐桌号" class="layui-input"  lay-required/>
                         </div>
-                        <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="tableBill-query">
+                        <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="prepareOrder-query">
                         <i class="layui-icon layui-icon-search"></i>
                         查询
                     </button>
@@ -29,21 +28,23 @@
      </div>
          <div class="layui-card">
              <div class="layui-card-body">
-                 <table id="tableBill-table" lay-filter="tableBill-table"></table>
+                 <table id="prepareOrder-table" lay-filter="prepareOrder-table"></table>
 
-                 <script type="text/html" id="tableBill-toolbar">
-                     <button  sec:authorize="hasPermission('/dishes/tableBill/remove','dishes:tableBill:remove')"   class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove" style="width: 90px">
+                 <script type="text/html" id="prepareOrder-toolbar">
+                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
                          <i class="layui-icon layui-icon-delete"></i>
-                         清理订单
+                         清理烹饪菜品
                      </button>
                  </script>
 
-                 <script type="text/html" id="tableBill-bar">
-                     <button  sec:authorize="hasPermission('/dishes/tableBill/remove','dishes:tableBill:remove')"   class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove" style="width: 100%">
-                         <i class="layui-icon layui-icon-rmb"></i>
-                         买单
-                     </button>
-                 </script>
+<!--                 <script type="text/html" id="prepareOrder-bar">-->
+<!--                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-primary pear-btn-sm startCooking-primary" lay-event="remove" style="display: none">-->
+<!--                         开始烹饪-->
+<!--                     </button>-->
+<!--                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-danger pear-btn-sm startCooking-danger" lay-event="remove" style="display: none">-->
+<!--                         正在烹饪-->
+<!--                     </button>-->
+<!--                 </script>-->
              </div>
          </div>
     <th:block th:include="include :: footer" />
@@ -53,72 +54,68 @@
                  let form = layui.form;
                  let $ = layui.jquery;
 
-                 let prefix = "/dishes/tableBill/";
+                 let prefix = "/dishes/prepareOrder/";
 
                  let cols = [
                      [
                          {type: 'checkbox'},
                          {
-                             field: 'orderId',
-                             title: '订单编号',
-                             hide:true
+                             field: 'odId',
+                             title: '详单编号',
+                             hide: true
                          },
+                        {
+                             field: 'orderReference',
+                             title: '对应订单编号',
+                             hide: true
+                        },
                          {
                              field: 'tableId',
-                             title: '订单的桌号',
-                         },
+                             title: '订单餐桌'
+                        },
+                        {
+                             field: 'dishes',
+                             title: '对应菜品编号',
+                             hide: true
+                        },
                          {
-                             field: 'waiterRealName',
-                             title: '点餐服务员'
-                         },
+                             field: 'dishesName',
+                             title: '菜品名称'
+                        },
+                        {
+                             field: 'num',
+                             title: '菜品数量'
+                        },
                          {
-                             field: 'waiterId',
-                             title: '订单点餐员编号',
-                             hide:true
-                         },
-                        {
-                             field: 'orderBeginTime',
-                             title: '订单开始时间'
+                             field: 'status',
+                             title: '订单菜品烹饪状态（0-未烹饪 1-正在烹饪 2-烹饪完成）',
+                             hide: true
                         },
-                        {
-                             field: 'orderEndTime',
-                             title: '订单结束时间',
-                             hide:true
-                        },
-                        {
-                             field: 'orderState',
-                             title: '订单状态（0正在用餐，1准备结账，2已经结账，3免单订单）',
-                             hide:true
-                        },
-                        {
-                             field: 'remark',
-                             title: '备注',
-                             hide:true
-                        },
-                         {title: '操作', toolbar: '#tableBill-bar', align: 'center', width: 120}
+                         {title: '操作', toolbar: '#prepareOrder-bar', align: 'center', width: 130}
                      ]
                  ]
 
                  table.render({
-                     elem: '#tableBill-table',
+                     elem: '#prepareOrder-table',
                      url: prefix + 'data',
                      page: true,
                      cols: cols,
                      skin: 'line',
-                     toolbar: '#tableBill-toolbar',
+                     toolbar: '#prepareOrder-toolbar',
                      defaultToolbar: [{
                          layEvent: 'refresh',
                          icon: 'layui-icon-refresh',
                      },  'print', 'exports']
+
                  });
 
-                 table.on('tool(tableBill-table)', function (obj) {
+                 table.on('tool(prepareOrder-table)', function (obj) {
                      if (obj.event === 'remove') {
                          window.remove(obj);
                      }
                  });
 
-                 table.on('toolbar(tableBill-table)', function (obj) {
+                 table.on('toolbar(prepareOrder-table)', function (obj) {
                      if (obj.event === 'refresh') {
                          window.refresh();
                      } else if (obj.event === 'batchRemove') {
@@ -126,17 +123,17 @@
                      }
                  });
 
-                 form.on('submit(tableBill-query)', function (data) {
-                     table.reload('tableBill-table', {where: data.field})
+                 form.on('submit(prepareOrder-query)', function (data) {
+                     table.reload('prepareOrder-table', {where: data.field})
                      return false;
                  });
 
 
-                 //点击餐桌买单
+                 //点击开始烹饪菜品
                  window.remove = function (obj) {
-                     layer.confirm(obj.data.tableId+'号桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
+                     layer.confirm('开始烹饪'+obj.data.dishesName+"?", {icon: 3, title: '提示'}, function (index) {
                          layer.close(index);
-                         obj.data.status = 1;
+                         obj.data.status += 1;
                          $.ajax({
                              url: prefix+'update',
                              data: JSON.stringify(obj.data),
@@ -145,9 +142,9 @@
                              type: 'put',
                              success: function (result) {
                                  if (result.success) {
-                                     layer.msg("订单已推送至前台", {icon: 1, time: 1000}, function () {
+                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                                          parent.layer.close(parent.layer.getFrameIndex(window.name));
-                                         table.reload("tableBill-table");
+                                         table.reload("prepareOrder-table");
                                      });
                                  } else {
                                      layer.msg(result.msg, {icon: 2, time: 1000});
@@ -160,15 +157,15 @@
                  window.batchRemove = function (obj) {
                      let data = table.checkStatus(obj.config.id).data;
                      if (data.length === 0) {
-                         layer.msg("请选择需要清理的订单餐桌", {icon: 3, time: 1000});
+                         layer.msg("请选中需要清理菜品", {icon: 3, time: 1000});
                          return false;
                      }
                      let ids = "";
                      for (let i = 0; i < data.length; i++) {
-                         ids += data[i].orderId + ",";
+                         ids += data[i].odId + ",";
                      }
                      ids = ids.substr(0, ids.length - 1);
-                     layer.confirm('确定清理这些订单么？', {icon: 3, title: '提示'}, function (index) {
+                     layer.confirm('确定要清理这些菜品', {icon: 3, title: '提示'}, function (index) {
                          layer.close(index);
                          let loading = layer.load();
                          $.ajax({
@@ -180,7 +177,7 @@
                                  layer.close(loading);
                                  if (result.success) {
                                      layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                         table.reload('tableBill-table');
+                                         table.reload('prepareOrder-table');
                                      });
                                  } else {
                                      layer.msg(result.msg, {icon: 2, time: 1000});
@@ -191,16 +188,10 @@
                  }
 
                  window.refresh = function (param) {
-                     table.reload('tableBill-table', {where: param});
+                     table.reload('prepareOrder-table', {where: param});
                  }
-
-                 //日期选择器
-                 laydate.render({
-                     elem: '#expiredTimeDate',
-                     format: "yyyy-MM-dd HH:mm:ss"
-                 });
-
              })
+
          </script>
 </body>
 </html>

@@ -10,6 +10,7 @@ import com.pearadmin.common.web.domain.response.Result;
 import com.pearadmin.common.web.domain.response.module.ResultTable;
 import com.pearadmin.common.tools.secure.SecurityUtil;
 import com.pearadmin.system.service.IDishesFoodService;
+import com.pearadmin.system.service.IprepareOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
@@ -35,6 +36,8 @@ public class orderController extends BaseController {
     private IorderService orderService;
     @Autowired
     private IDishesFoodService iDishesFoodService;
+    @Autowired
+    private IprepareOrderService iprepareOrderService;
 
     @GetMapping("/main")
     @PreAuthorize("hasPermission('/dishes/order/main','dishes:order:main')")
@@ -120,9 +123,16 @@ public class orderController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/placeOrder")
-    public Result placeOrder(@RequestParam String[] DishesIds) {
-        int sucess = 1;
-        System.out.println(Arrays.asList(DishesIds));
+    public Result placeOrder(@RequestParam String[][] DishesOrderDetail, String orderReference) {
+        int sucess = 0;
+        prepareOrder prepareOrder = new prepareOrder();
+        for (String[] str : DishesOrderDetail) {
+            prepareOrder.setDishes(Long.valueOf(str[0]));
+            prepareOrder.setNum(Long.valueOf(str[1]));
+            prepareOrder.setOrderReference(Long.valueOf(orderReference));
+            prepareOrder.setStatus(0);
+            sucess = iprepareOrderService.insertprepareOrder(prepareOrder);
+        }
         return decide(sucess);
     }
 
@@ -134,7 +144,6 @@ public class orderController extends BaseController {
     public Result createOrder(@RequestParam Integer tableId) {
         int sucess = 0;
         order order = new order();
-        order.setOrderId(7L);
         order.setOrderBeginTime(new Date());
         order.setWaiterId("1309861917694623744");
         order.setOrderState(0);

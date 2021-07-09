@@ -44,11 +44,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderReference != null">`order_reference`,</if>
             <if test="dishes != null">`dishes`,</if>
             <if test="num != null">`num`,</if>
+            <if test="status != null">`status`,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderReference != null">#{orderReference},</if>
             <if test="dishes != null">#{dishes},</if>
             <if test="num != null">#{num},</if>
+            <if test="status != null">#{status},</if>
          </trim>
     </insert>
 

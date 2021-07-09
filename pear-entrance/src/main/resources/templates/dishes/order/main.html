@@ -99,8 +99,8 @@
 <script>
     //购物车
     let orderDishesList = [];
-    //菜品Id
-    let DishesIds = [];
+    //点餐具体
+    let DishesOrderDetail = [];
     //订单编号
     let orderReference = '';
 
@@ -114,8 +114,6 @@
             area: ['660px', '590px'],
             content: "/dishes/order/add",
         });
-        orderReference = $("#dishesId", window.parent.document).val;
-        console.log("orderReference" + orderReference);
     };
 
     // 获取所选菜品数量及名称
@@ -123,12 +121,16 @@
         <!--定义formData对象-->
         let formData = new FormData(form);
         let orderDishes = [];
+        //菜品Id和数量
+        let DishesIdsAndNum = [];
         //利用fromData对象的get方法获取表单数据 dishes：菜品编号 num：菜品数量
         let dishes = formData.get('dishes');
         let num = formData.get('dishesNum');
         let name = formData.get('name');
         let price = formData.get('price');
-        DishesIds.push(dishes)
+        DishesIdsAndNum.push(dishes);
+        DishesIdsAndNum.push(num);
+        DishesOrderDetail.push(DishesIdsAndNum)
         orderDishes.push(dishes);
         orderDishes.push(name);
         orderDishes.push(price);
@@ -194,12 +196,13 @@
 
     //提交下单请求
     function submitOrder() {
+        orderReference = $("#dishesId").attr("value");
         layer.confirm('您确定下单么？', {icon: 1, title: '提示'}, function (index) {
             layer.close(index);
             $.ajax({
                 url: '/dishes/order/placeOrder',
                 type: 'POST',
-                data: {'DishesIds': DishesIds},
+                data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
                 traditional: true,
                 success: function (result) {
                     if (result.success) {

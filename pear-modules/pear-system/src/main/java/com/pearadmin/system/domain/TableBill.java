@@ -35,9 +35,6 @@ public class TableBill extends BaseDomain
     /** 订单状态（0正在用餐，1准备结账，2已经结账，3免单订单） */
     private Integer orderState;
 
-    /** 订单是否餐桌买单（0-餐桌没有点击买单，1-餐桌已点击买单） */
-    private Integer status;
-
     /** 订单的桌号 */
     private Integer tableId;
 

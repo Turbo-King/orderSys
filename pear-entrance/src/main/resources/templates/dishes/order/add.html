@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('选择餐桌')"/>
+</head>
+<body>
+<div class="tableDiv" value="1" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">一号桌</span>
+</div>
+<div class="tableDiv" value="2" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">二号桌</span>
+</div>
+<div class="tableDiv" value="3" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">三号桌</span>
+</div>
+<div class="tableDiv" value="4" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">四号桌</span>
+</div>
+<div class="tableDiv" value="5" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">五号桌</span>
+</div>
+<div class="tableDiv" value="6" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">六号桌</span>
+</div>
+<div class="tableDiv" value="7" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">七号桌</span>
+</div>
+<div class="tableDiv" value="8" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">八号桌</span>
+</div>
+<div class="tableDiv" value="9" onclick="selectTable(this)">
+    <img th:src="@{/admin/images/table.png}" class="tableImg">
+    <span class="tableSpan">九号桌</span>
+</div>
+</body>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+
+    //选择餐桌进行开单
+    function selectTable(event) {
+        let tableId = $(event).attr("value");
+        console.log(tableId);
+
+        layer.confirm('您确定在' + tableId + '号桌就餐么？', {icon: 1, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: '/dishes/order/createOrder',
+                type: 'POST',
+                data: {'tableId': tableId},
+                success: function (result) {
+                    console.log(result);
+                    if (result.success) {
+                        layer.msg("开桌成功", {icon: 1, time: 1500}, function () {
+                            let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //关闭选桌窗口
+                            parent.layer.close(index);
+                            $("#dishesId", window.parent.document).val(result.data);
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+        });
+    }
+
+
+    layui.use(['form', 'jquery', 'laydate', 'dictionary'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let laydate = layui.laydate;
+
+        let prefix = "/dishes/order/"
+
+        laydate.render({
+            elem: '#orderBeginTime'
+        });
+        laydate.render({
+            elem: '#orderEndTime'
+        });
+
+        form.on('submit(order-save)', function (data) {
+            for (var key in data.field) {
+                var type = $(data.form).find("input[name='" + key + "']").attr("type");
+                if (type == "checkbox") {
+                    var value = "";
+                    $(data.form).find("input[name='" + key + "']:checked").each(function () {
+                        value += $(this).val() + ",";
+                    })
+                    if (value != "") {
+                        value = value.substr(0, value.length - 1);
+                        data.field[key] = value;
+                    }
+
+                }
+            }
+            $.ajax({
+                url: prefix + 'save',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            parent.layui.table.reload("order-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('顾客订单详情')"/>
+    <link rel="stylesheet" th:href="@{/component/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{/component/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+
+<div class="container-fluid" style="padding: 0px 0px;" th:object="${customerBillList}">
+    <div class="row-fluid">
+        <div class="span6" style="width:30%;float:left">
+            <div
+                    style="background-color: #66A;padding: 15px;margin: 1px;height:202px;color:white;">
+                <h1 id="tableId" style="text-align: center; margin-top: 50px" th:text="${customerBillList[0].tableId}">
+                    1</h1>
+                <h3 style="color: white;font-weight: bold;font-family: 微软雅黑;text-align: center">号桌</h3>
+
+                <p style="text-align: center;font-size: 24;margin-top: 11px ">
+                    <i class="icon-warning-sign icon-large"></i>
+                </p>
+            </div>
+        </div>
+        <div class="span6" style="width:70%;float:left">
+            <div class="row-fluid">
+                <div class="span6" style="width:50%;float:left">
+                    <div
+                            style="background-color: #CCC;padding: 15px;margin: 1px;height:100px;">
+                        <h3 style="text-align: center">开始时间</h3>
+                        <p id="orderBeginTime" style="text-align: center"
+                           th:text="${#dates.format(customerBillList[0].orderBeginTime,'yyyy-MM-dd HH:mm:ss')}">2015-9-8
+                            10：30</p>
+
+                    </div>
+
+                </div>
+                <div class="span6" style="width:50%;float:left">
+
+                    <div
+                            style="background-color: #CF0;padding: 15px;margin: 1px;height:100px;">
+                        <h3 style="text-align: center">结餐时间</h3>
+                        <p id="orderEndTime" style="text-align: center"
+                           th:text="${#dates.format(customerBillList[0].orderEndTime,'yyyy-MM-dd HH:mm:ss')}">2015-9-8
+                            10：30</p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6" style="width:50%;float:left">
+
+                    <div
+                            style="background-color: #FA0;padding: 15px;margin: 1px;height:100px;">
+                        <h3 style="text-align: center">点餐服务员</h3>
+                        <p id="userAccount" style="text-align: center" th:text="${customerBillList[0].waiterRealName}">
+                            杨强</p>
+
+                    </div>
+                </div>
+                <div class="span6" style="width:50%;float:left">
+
+                    <div
+                            style="background-color: #DAD;padding: 15px;margin: 1px;height:100px;">
+                        <h3 style="text-align: center">总价（元）</h3>
+                        <p style="text-align: center">
+                            <span style="color:red;font-weight: bold" id="sumPrice"
+                                  th:text="${countPrice}">1000.00</span>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel panel-danger" style="margin-top: 10px">
+    <div class="panel-heading">
+        <h3 class="panel-title">订单详情</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped">
+
+            <caption>该桌的订单详情如下</caption>
+            <thead>
+            <tr>
+                <th>菜品</th>
+                <th>单价</th>
+                <th>数量</th>
+                <th>总价</th>
+            </tr>
+            </thead>
+            <tbody th:each="customerBill:${customerBillList}">
+            <tr>
+                <th th:text="${customerBill.dishesName}"></th>
+                <th th:text="${customerBill.price}"></th>
+                <th th:text="${customerBill.num}"></th>
+                <th th:text="${customerBill.lineCountPrice}"></th>
+            </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

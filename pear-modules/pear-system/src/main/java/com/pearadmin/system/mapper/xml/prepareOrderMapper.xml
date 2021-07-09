@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             and `dishes_order`.`order_id` = `order_details`.`order_reference`
             and `order_details`.`dishes` = `dishes_food`.`id`
+            and `dishes_order`.`order_state` = 0
             and `order_details`.`status` in (0,1)
             <if test="tableId != null "> and `dishes_order`.`table_id` = #{tableId}</if>
             <if test="orderReference != null "> and `order_reference` = #{orderReference}</if>

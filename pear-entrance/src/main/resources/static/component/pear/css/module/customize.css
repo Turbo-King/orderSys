@@ -1,13 +1,53 @@
 /*是否推荐样式*/
 .recommend_false {
-	margin: 10px 0 10px 0;
-	font-size: 18px;
-	font-weight: 18;
-	color: gray;
+    margin: 10px 0 10px 0;
+    font-size: 18px;
+    font-weight: 18;
+    color: gray;
 }
+
 .recommend_true {
-	margin: 10px 0 10px 0;
-	font-size: 18px;
-	font-weight: 18;
-	color: red;
+    margin: 10px 0 10px 0;
+    font-size: 18px;
+    font-weight: 18;
+    color: red;
+}
+
+/*轮播图片样式*/
+.img_style {
+    border-radius: 5px;
+}
+
+/*限制菜品简介展示字数*/
+.span-text {
+    max-width: 8em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; /*超出部分用...代替*/
+}
+
+/*餐桌选择展示*/
+.tableDiv {
+    display: inline-block;
+    margin: 13px;
+    width: 27%;
+    text-align: center;
+}
+
+/*餐桌选择图片展示*/
+.tableImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    transition: -webkit-transform 2s; /*延迟效果*/
+}
+
+.tableImg:hover {
+    transform: scale(1.25, 1.25); /*放大的倍数*/
+}
+
+/*餐桌桌号展示*/
+.tableSpan {
+    display: block;
+    font-weight: bolder;
 }

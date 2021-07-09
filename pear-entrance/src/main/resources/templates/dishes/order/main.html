@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="include :: header('点餐订单列表')"/>
+</head>
+<link rel="stylesheet" th:href="@{/component/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/component/dashboard/dashboard.css}">
+<script th:src="@{/component/bootstrap/js/bootstrap.min.js}"></script>
+
+<body class="pear-container" style="padding-top: 0">
+<div class="layui-card" th:object="${dishesFoodList}">
+    <div class="col-sm-12 search-collapse">
+        <div class="layui-form-item">
+            <!-- 推荐菜轮播效果展示 -->
+            <div class="layui-carousel" id="recommend">
+                <div carousel-item>
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fs1.cdn.xiachufang.com%2Fc519cbde88d311e6b87c0242ac110003_600w_387h.jpg%402o_50sh_1pr_1l_660w_90q_1wh&refer=http%3A%2F%2Fs1.cdn.xiachufang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1627289547&t=07c8bd2e6fb9fb75b55bfac926161524"
+                         alt="推荐菜品" class="img_style">
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.syuan.net%2Fforum%2F201911%2F29%2F031447mz35kqfkv7mqgmv3.jpg&refer=http%3A%2F%2Fimg.syuan.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1627437479&t=d7b6ff53ac87a6aa6908cfe64381de27"
+                         alt="推荐菜品" class="img_style">
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi.women-health.cn%2Fupimg%2Fallimg%2F190104%2F18-1Z10411342L14.jpg&refer=http%3A%2F%2Fi.women-health.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1627289361&t=92fc93d39e7a445579adeed9a76cf35c"
+                         alt="推荐菜品" class="img_style">
+                    <img src="https://tse1-mm.cn.bing.net/th?id=OIP-C.sOULyzWITXeplFAFw_Zs9wHaGe&w=201&h=160&c=8&rs=1&qlt=90&o=6&dpr=2&pid=3.1&rm=2"
+                         alt="推荐菜品" class="img_style">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 search-collapse">
+        <div class="layui-form-item">
+            <!--点餐界面-->
+            <div class="panel panel-danger">
+                <div class="panel-heading" style="height: auto">
+                    <h2 class="panel-title">菜品清单</h2>
+                    <input type="hidden" value="" id="dishesId">
+                </div>
+                <div class="panel-body" style="padding-bottom: 0px">
+
+                    <div class="row placeholders">
+                        <div class="col-xs-6 col-sm-3 placeholder" th:each="dishesFood:${dishesFoodList}">
+                            <div th:value="${dishesFood.id}" onclick="foodDetails(this)">
+                                <img class="img-thumbnail"
+                                     style="border-radius:20px;height: 170px" alt="Generic placeholder thumbnail"
+                                     th:src="${dishesFood.pictureUrl}">
+                            </div>
+                            <h4 th:text="${dishesFood.name}">鱼香肉丝</h4>
+                            <span class="text-muted span-text" th:text="${dishesFood.introduction}">色香味俱全，顾客都喜欢</span>
+                            <form name="dishesFood" onsubmit="return addOrder(this)">
+                                <div style="width:120px;margin: 0px auto">
+                                    <div class="input-group">
+                                        <input th:value="${dishesFood.id}" name="dishes" type="hidden"/>
+                                        <input th:value="${dishesFood.name}" name="name" type="hidden"/>
+                                        <input th:value="${dishesFood.price}" name="price" type="hidden"/>
+                                        <span class="input-group-btn">
+													<button class="btn btn-default" type="button"
+                                                            onclick="subtractFood(this)">-</button>
+												</span>
+                                        <input type="text" class="form-control" value="1" readonly="readonly"
+                                               name="dishesNum"
+                                               style="text-align: center;padding: 0px;cursor: text;">
+
+                                        <span class="input-group-btn">
+													<button class="btn btn-default" type="button"
+                                                            onclick="addFood(this)">+</button>
+												</span>
+                                    </div>
+                                    <!-- /input-group -->
+                                </div>
+                                <p>
+                                    <input type="submit" class="btn btn-danger"
+                                           style="width:120px;margin-top: 5px" value="加入点餐车"/>
+                                </p>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div style="width: 100%">
+                        <div style="float: left">
+                            <img th:src="@{/admin/images/order.png}" id="shoppingCart" alt="购物车"
+                                 onclick="orderDetails()"
+                                 style="width: 50px;height: 50px;margin-left: 10px;margin-bottom: 10px;display: none">
+                        </div>
+                        <div style="text-align: center;">
+                            <button class="btn btn-danger" onclick="submitOrder()"
+                                    style="width: 40%;margin-bottom: 15px;font-size: 18px;font-weight: bold;">确认下单
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    //购物车
+    let orderDishesList = [];
+    //菜品Id
+    let DishesIds = [];
+    //订单编号
+    let orderReference = '';
+
+    //弹出框选择餐桌
+    window.onload = function () {
+        console.log("测试餐桌选择界面弹出");
+        layer.open({
+            type: 2,
+            title: '请选择餐桌',
+            shade: 0.1,
+            area: ['660px', '590px'],
+            content: "/dishes/order/add",
+        });
+        orderReference = $("#dishesId", window.parent.document).val;
+        console.log("orderReference" + orderReference);
+    };
+
+    // 获取所选菜品数量及名称
+    function addOrder(form) {
+        <!--定义formData对象-->
+        let formData = new FormData(form);
+        let orderDishes = [];
+        //利用fromData对象的get方法获取表单数据 dishes：菜品编号 num：菜品数量
+        let dishes = formData.get('dishes');
+        let num = formData.get('dishesNum');
+        let name = formData.get('name');
+        let price = formData.get('price');
+        DishesIds.push(dishes)
+        orderDishes.push(dishes);
+        orderDishes.push(name);
+        orderDishes.push(price);
+        orderDishes.push(num);
+        // orderDishesList.push("{" + "dishes" + ":" + dishes + "," + "name" + ":" + name + "," + "price" + ":" + price + "," + "num" + ":" + num + "}");
+        // orderDishesList.push("[" + dishes + "," + name + "," + price + "," + num + "]");
+        orderDishesList.push(orderDishes);
+        layer.msg('菜品加入成功！', {icon: 1, time: 1000});
+        //判断购物车是否有订单
+        if (orderDishesList.length !== 0) {
+            $('#shoppingCart').css('display', 'inline-block');
+        }
+        console.log(orderDishesList);
+        return false;
+    }
+
+    <!--点击菜品图片显示菜品详细信息-->
+    function foodDetails(event) {
+        console.log($(event).attr("value"));
+
+        layer.open({
+            type: 2,
+            title: '菜品详情',
+            shade: 0.1,
+            area: ['550px', '570px'],
+            content: '/dishes/order/edit?orderId=' + $(event).attr("value")
+        });
+    }
+
+    //点击购物车展示点餐详情
+    function orderDetails() {
+        $.ajax({
+            type: 'POST',
+            url: '/dishes/order/orderDishes',//发送请求
+            data: {'orderDishesList': orderDishesList},
+            traditional: true,
+            success: function (result) {
+                let htmlCont = result;//返回的结果页面
+                layer.open({
+                    type: 1,//弹出框类型
+                    title: '点餐详情',
+                    shadeClose: 0.1, //点击遮罩关闭层
+                    area: ['550px', '570px'],
+                    content: htmlCont,//将结果页面放入layer弹出层中
+                });
+            }
+        });
+    }
+
+    //减菜
+    function subtractFood(obj) {
+        let form = obj.parentNode.parentNode.parentNode.parentNode;
+        if (parseInt(form.dishesNum.value) > 1) {
+            form.dishesNum.value = parseInt(form.dishesNum.value) - 1;
+        }
+    }
+
+    //加菜
+    function addFood(obj) {
+        let form = obj.parentNode.parentNode.parentNode.parentNode;
+        form.dishesNum.value = parseInt(form.dishesNum.value) + 1;
+    }
+
+    //提交下单请求
+    function submitOrder() {
+        layer.confirm('您确定下单么？', {icon: 1, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: '/dishes/order/placeOrder',
+                type: 'POST',
+                data: {'DishesIds': DishesIds},
+                traditional: true,
+                success: function (result) {
+                    if (result.success) {
+                        layer.msg("下单成功", {icon: 1, time: 1500}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+        });
+    }
+
+
+    layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
+
+        //首页轮播效果
+        let carousel = layui.carousel;
+        //建造实例
+        carousel.render({
+            elem: '#recommend'
+            , width: '100%' //设置容器宽度
+            , height: '320'
+            , arrow: 'always' //始终显示箭头
+        });
+    })
+</script>
+</body>
+</html>

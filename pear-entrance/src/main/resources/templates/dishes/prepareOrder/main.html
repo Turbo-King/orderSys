@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="include :: header('后厨备餐表列表')" />
+    <th:block th:include="include :: header('后厨备餐表列表')"/>
 </head>
 <body class="pear-container">
-     <div class="layui-card">
-        <div class="layui-card-body">
-            <div class="col-sm-12 search-collapse">
-                <form id="formId" class="layui-form">
-                    <div class="layui-form-item">
-                            <label class="layui-form-label">订单餐桌：</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="tableId" placeholder="请输入订单餐桌号" class="layui-input"  lay-required/>
-                        </div>
-                        <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="prepareOrder-query">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId" class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单餐桌：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="tableId" placeholder="请输入订单餐桌号" class="layui-input" lay-required/>
+                    </div>
+                    <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="prepareOrder-query">
                         <i class="layui-icon layui-icon-search"></i>
                         查询
                     </button>
@@ -21,177 +21,182 @@
                         <i class="layui-icon layui-icon-refresh"></i>
                         重置
                     </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-     </div>
-         <div class="layui-card">
-             <div class="layui-card-body">
-                 <table id="prepareOrder-table" lay-filter="prepareOrder-table"></table>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="prepareOrder-table" lay-filter="prepareOrder-table"></table>
 
-                 <script type="text/html" id="prepareOrder-toolbar">
-                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
-                         <i class="layui-icon layui-icon-delete"></i>
-                         清理烹饪菜品
-                     </button>
-                 </script>
+        <script type="text/html" id="prepareOrder-toolbar">
+            <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"
+                    class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+                <i class="layui-icon layui-icon-delete"></i>
+                清理烹饪菜品
+            </button>
+        </script>
 
-<!--                 <script type="text/html" id="prepareOrder-bar">-->
-<!--                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-primary pear-btn-sm startCooking-primary" lay-event="remove" style="display: none">-->
-<!--                         开始烹饪-->
-<!--                     </button>-->
-<!--                     <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"   class="pear-btn pear-btn-danger pear-btn-sm startCooking-danger" lay-event="remove" style="display: none">-->
-<!--                         正在烹饪-->
-<!--                     </button>-->
-<!--                 </script>-->
-             </div>
-         </div>
-    <th:block th:include="include :: footer" />
-         <script>
-             layui.use(['table', 'form', 'jquery','dictionary'], function () {
-                 let table = layui.table;
-                 let form = layui.form;
-                 let $ = layui.jquery;
+        <script type="text/html" id="prepareOrder-bar">
+            <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"
+                    class="pear-btn pear-btn-primary pear-btn-sm startCooking-primary" lay-event="remove">
+                开始烹饪
+            </button>
+            <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"
+                    class="pear-btn pear-btn-danger pear-btn-sm startCooking-danger" lay-event="remove">
+                正在烹饪
+            </button>
+        </script>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
 
-                 let prefix = "/dishes/prepareOrder/";
+        let prefix = "/dishes/prepareOrder/";
 
-                 let cols = [
-                     [
-                         {type: 'checkbox'},
-                         {
-                             field: 'odId',
-                             title: '详单编号',
-                             hide: true
-                         },
-                        {
-                             field: 'orderReference',
-                             title: '对应订单编号',
-                             hide: true
-                        },
-                         {
-                             field: 'tableId',
-                             title: '订单餐桌'
-                        },
-                        {
-                             field: 'dishes',
-                             title: '对应菜品编号',
-                             hide: true
-                        },
-                         {
-                             field: 'dishesName',
-                             title: '菜品名称'
-                        },
-                        {
-                             field: 'num',
-                             title: '菜品数量'
-                        },
-                         {
-                             field: 'status',
-                             title: '订单菜品烹饪状态（0-未烹饪 1-正在烹饪 2-烹饪完成）',
-                             hide: true
-                        },
-                         {title: '操作', toolbar: '#prepareOrder-bar', align: 'center', width: 130}
-                     ]
-                 ]
+        let cols = [
+            [
+                {type: 'checkbox'},
+                {
+                    field: 'odId',
+                    title: '详单编号',
+                    hide: true
+                },
+                {
+                    field: 'orderReference',
+                    title: '对应订单编号',
+                    hide: true
+                },
+                {
+                    field: 'tableId',
+                    title: '订单餐桌',
+                    align: 'center',
+                },
+                {
+                    field: 'dishes',
+                    title: '对应菜品编号',
+                    hide: true
+                },
+                {
+                    field: 'dishesName',
+                    title: '菜品名称',
+                },
+                {
+                    field: 'num',
+                    title: '菜品数量',
+                    align: "center",
+                },
+                {
+                    field: 'status',
+                    title: '订单菜品烹饪状态（0-未烹饪 1-正在烹饪 2-烹饪完成）',
+                    hide: true
+                },
+                {title: '操作', toolbar: '#prepareOrder-bar', align: 'center', width: 240}
+            ]
+        ]
 
-                 table.render({
-                     elem: '#prepareOrder-table',
-                     url: prefix + 'data',
-                     page: true,
-                     cols: cols,
-                     skin: 'line',
-                     toolbar: '#prepareOrder-toolbar',
-                     defaultToolbar: [{
-                         layEvent: 'refresh',
-                         icon: 'layui-icon-refresh',
-                     },  'print', 'exports']
+        table.render({
+            elem: '#prepareOrder-table',
+            url: prefix + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#prepareOrder-toolbar',
+            defaultToolbar: [{
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'print', 'exports']
 
-                 });
+        });
 
-                 table.on('tool(prepareOrder-table)', function (obj) {
-                     if (obj.event === 'remove') {
-                         window.remove(obj);
-                     }
-                 });
+        table.on('tool(prepareOrder-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            }
+        });
 
-                 table.on('toolbar(prepareOrder-table)', function (obj) {
-                     if (obj.event === 'refresh') {
-                         window.refresh();
-                     } else if (obj.event === 'batchRemove') {
-                         window.batchRemove(obj);
-                     }
-                 });
+        table.on('toolbar(prepareOrder-table)', function (obj) {
+            if (obj.event === 'refresh') {
+                window.refresh();
+            } else if (obj.event === 'batchRemove') {
+                window.batchRemove(obj);
+            }
+        });
 
-                 form.on('submit(prepareOrder-query)', function (data) {
-                     table.reload('prepareOrder-table', {where: data.field})
-                     return false;
-                 });
+        form.on('submit(prepareOrder-query)', function (data) {
+            table.reload('prepareOrder-table', {where: data.field})
+            return false;
+        });
 
 
-                 //点击开始烹饪菜品
-                 window.remove = function (obj) {
-                     layer.confirm('开始烹饪'+obj.data.dishesName+"?", {icon: 3, title: '提示'}, function (index) {
-                         layer.close(index);
-                         obj.data.status += 1;
-                         $.ajax({
-                             url: prefix+'update',
-                             data: JSON.stringify(obj.data),
-                             dataType: 'json',
-                             contentType: 'application/json',
-                             type: 'put',
-                             success: function (result) {
-                                 if (result.success) {
-                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                         parent.layer.close(parent.layer.getFrameIndex(window.name));
-                                         table.reload("prepareOrder-table");
-                                     });
-                                 } else {
-                                     layer.msg(result.msg, {icon: 2, time: 1000});
-                                 }
-                             }
-                         })
-                     });
-                 }
+        //点击开始烹饪菜品
+        window.remove = function (obj) {
+            layer.confirm('开始烹饪' + obj.data.dishesName + "?", {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                obj.data.status += 1;
+                $.ajax({
+                    url: prefix + 'update',
+                    data: JSON.stringify(obj.data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'put',
+                    success: function (result) {
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                table.reload("prepareOrder-table");
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
 
-                 window.batchRemove = function (obj) {
-                     let data = table.checkStatus(obj.config.id).data;
-                     if (data.length === 0) {
-                         layer.msg("请选中需要清理菜品", {icon: 3, time: 1000});
-                         return false;
-                     }
-                     let ids = "";
-                     for (let i = 0; i < data.length; i++) {
-                         ids += data[i].odId + ",";
-                     }
-                     ids = ids.substr(0, ids.length - 1);
-                     layer.confirm('确定要清理这些菜品', {icon: 3, title: '提示'}, function (index) {
-                         layer.close(index);
-                         let loading = layer.load();
-                         $.ajax({
-                             url: prefix + "batchRemove",
-                             dataType: 'json',
-                             data: {"ids":ids},
-                             type: 'delete',
-                             success: function (result) {
-                                 layer.close(loading);
-                                 if (result.success) {
-                                     layer.msg(result.msg, {icon: 1, time: 1000}, function () {
-                                         table.reload('prepareOrder-table');
-                                     });
-                                 } else {
-                                     layer.msg(result.msg, {icon: 2, time: 1000});
-                                 }
-                             }
-                         })
-                     });
-                 }
+        window.batchRemove = function (obj) {
+            let data = table.checkStatus(obj.config.id).data;
+            if (data.length === 0) {
+                layer.msg("请选中需要清理菜品", {icon: 3, time: 1000});
+                return false;
+            }
+            let ids = "";
+            for (let i = 0; i < data.length; i++) {
+                ids += data[i].odId + ",";
+            }
+            ids = ids.substr(0, ids.length - 1);
+            layer.confirm('确定要清理这些菜品', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: prefix + "batchRemove",
+                    dataType: 'json',
+                    data: {"ids": ids},
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                table.reload('prepareOrder-table');
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
 
-                 window.refresh = function (param) {
-                     table.reload('prepareOrder-table', {where: param});
-                 }
-             })
+        window.refresh = function (param) {
+            table.reload('prepareOrder-table', {where: param});
+        }
+    })
 
-         </script>
+</script>
 </body>
 </html>

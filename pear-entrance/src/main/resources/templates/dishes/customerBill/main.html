@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="include :: header('顾客买单列表')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId" class="layui-form">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单的桌号：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="tableId" placeholder="请输入订单的桌号" class="layui-input" lay-required/>
+                    </div>
+                    <button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="customerBill-query">
+                        <i class="layui-icon layui-icon-search"></i>
+                        查询
+                    </button>
+                    <button type="reset" class="pear-btn pear-btn-md">
+                        <i class="layui-icon layui-icon-refresh"></i>
+                        重置
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="customerBill-table" lay-filter="customerBill-table"></table>
+
+        <script type="text/html" id="customerBill-toolbar">
+            <button sec:authorize="hasPermission('/dishes/customerBill/remove','dishes:customerBill:remove')"
+                    class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+                <i class="layui-icon layui-icon-delete"></i>
+                清理待结账订单
+            </button>
+        </script>
+
+        <script type="text/html" id="customerBill-bar">
+            <button sec:authorize="hasPermission('/dishes/customerBill/edit','dishes:customerBill:add')"
+                    class="pear-btn pear-btn-warming pear-btn-sm" lay-event="edit" style="width: 60px">
+                详情
+            </button>
+            <button sec:authorize="hasPermission('/dishes/customerBill/edit','dishes:customerBill:edit')"
+                    class="pear-btn pear-btn-primary pear-btn-sm" lay-event="add" style="width: 60px">
+                结账
+            </button>
+            <button sec:authorize="hasPermission('/dishes/customerBill/remove','dishes:customerBill:remove')"
+                    class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove" style="width: 60px">
+                免单
+            </button>
+        </script>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        let prefix = "/dishes/customerBill/";
+
+        let cols = [
+            [
+                {type: 'checkbox', width: 60},
+                {
+                    field: 'orderId',
+                    title: '订单编号',
+                    hide: true
+                },
+                {
+                    field: 'tableId',
+                    title: '订单的桌号',
+                    align: 'center',
+                    width: 120
+                },
+                {
+                    field: 'orderBeginTime',
+                    title: '订单开始时间',
+                    hide: true
+                },
+                {
+                    field: 'orderEndTime',
+                    title: '用餐结束时间'
+                },
+                {
+                    field: 'waiterId',
+                    title: '订单点餐员编号',
+                    hide: true
+                },
+                {
+                    field: 'waiterRealName',
+                    title: '订单点餐服务员',
+                    align: "center",
+                    width: 130
+                },
+                {
+                    field: 'orderState',
+                    title: '订单状态',
+                    hide: true
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    align: "center"
+                },
+                {title: '操作', toolbar: '#customerBill-bar', align: 'center', width: 240}
+            ]
+        ]
+
+        table.render({
+            elem: '#customerBill-table',
+            url: prefix + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#customerBill-toolbar',
+            defaultToolbar: [{
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'print', 'exports']
+        });
+
+        table.on('tool(customerBill-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'add') {
+                window.add(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            }
+        });
+
+        table.on('toolbar(customerBill-table)', function (obj) {
+            if (obj.event === 'refresh') {
+                window.refresh();
+            } else if (obj.event === 'batchRemove') {
+                window.batchRemove(obj);
+            }
+        });
+
+        form.on('submit(customerBill-query)', function (data) {
+            table.reload('customerBill-table', {where: data.field})
+            return false;
+        });
+
+        //顾客免单
+        window.remove = function (obj) {
+            layer.confirm(obj.data.tableId + '号桌顾客确定免单么?', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                //订单状态转换为已免单
+                obj.data.orderState = 3;
+                $.ajax({
+                    url: prefix + 'update',
+                    data: JSON.stringify(obj.data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'put',
+                    success: function (result) {
+                        if (result.success) {
+                            layer.msg(obj.data.tableId + "号桌顾客免单成功", {icon: 1, time: 1000}, function () {
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                table.reload("customerBill-table");
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        //顾客结账
+        window.add = function (obj) {
+            layer.confirm(obj.data.tableId + '号桌顾客确定结账么?', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                //订单状态转换为已结账
+                obj.data.orderState = 2;
+                $.ajax({
+                    url: prefix + 'update',
+                    data: JSON.stringify(obj.data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'put',
+                    success: function (result) {
+                        if (result.success) {
+                            layer.msg(obj.data.tableId + "号桌顾客结账成功", {icon: 1, time: 1000}, function () {
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                table.reload("customerBill-table");
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        //顾客结账详情
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '顾客结账详情',
+                shade: 0.1,
+                area: ['550px', '580px'],
+                content: prefix + 'edit?orderId=' + obj.data['orderId']
+            });
+        }
+
+        window.batchRemove = function (obj) {
+            let data = table.checkStatus(obj.config.id).data;
+            if (data.length === 0) {
+                layer.msg("请选中需要清理的订单", {icon: 3, time: 1000});
+                return false;
+            }
+            let ids = "";
+            for (let i = 0; i < data.length; i++) {
+                ids += data[i].orderId + ",";
+            }
+            ids = ids.substr(0, ids.length - 1);
+            layer.confirm('确定要清理这些订单么？', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: prefix + "batchRemove",
+                    dataType: 'json',
+                    data: {"ids": ids},
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                table.reload('customerBill-table');
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        window.refresh = function (param) {
+            table.reload('customerBill-table', {where: param});
+        }
+
+        //日期选择器
+        laydate.render({
+            elem: '#expiredTimeDate',
+            format: "yyyy-MM-dd HH:mm:ss"
+        });
+    })
+</script>
+</body>
+</html>

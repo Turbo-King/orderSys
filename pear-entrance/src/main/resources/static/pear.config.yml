@@ -51,7 +51,6 @@ colors:
   color: "#f56c6c"
 - id: "5"
   color: "darkgray"
-## 主题面板的链接列表配置
 ## 其他配置
 other: 
   ## 主页动画时长

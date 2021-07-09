@@ -45,29 +45,19 @@ pear:
   # Document 配 置 信 息
   swagger:
     # 文 档 标 题
-    title: Pear Admin API
+    title: orderSys
     # 是 否 开 启
     enable: true
     # 描 述 信 息
-    describe: 企 业 快 速 开 发 平 台
+    describe: 点餐系统
     # 扫 包 路 径
     scan-package: com.pearadmin
     # 协 议
     licence: MIT
-    # 协 议 地 址
-    licence-url: https://gitee.com/pear_community
-    # 组 织 信 息
-    terms-of-service-url: https://gitee.com/pear_community
-    # 版 本 信 息
-    version: Release 2.0.0
     # 扩 展 信 息
     contact:
       # 作 者
-      name: 就 眠 仪 式
-      # 连 接
-      url: www.pearadmin.cn
-      # 邮 箱
-      email: Jmys1992@gmail.com
+      name: wzh
   # 权 限 配 置
   security:
     # 开 启 超 级 管 理 员 账 号 -- 不需要验证权限

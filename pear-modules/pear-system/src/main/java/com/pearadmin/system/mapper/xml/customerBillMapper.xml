@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.system.mapper.customerBillMapper">
+
+    <resultMap type="com.pearadmin.system.domain.customerBill" id="customerBillResult">
+        <result property="orderId" column="order_id"/>
+        <result property="orderBeginTime" column="order_begin_time"/>
+        <result property="orderEndTime" column="order_end_time"/>
+        <result property="waiterId" column="waiter_id"/>
+        <result property="waiterRealName" column="real_name"/>
+        <result property="orderState" column="order_state"/>
+        <result property="tableId" column="table_id"/>
+        <result property="remark" column="remark"/>
+        <result property="dishesName" column="name"/>
+        <result property="price" column="price"/>
+        <result property="num" column="num"/>
+        <result property="lineCountPrice" column="line_count_price"/>
+
+    </resultMap>
+
+    <sql id="selectcustomerBillVo">
+        select `dishes_order`.`order_id`,
+               `dishes_order`.`order_begin_time`,
+               `dishes_order`.`order_end_time`,
+               `dishes_order`.`waiter_id`,
+               `sys_user`.`real_name`,
+               `dishes_order`.`order_state`,
+               `dishes_order`.`table_id`,
+               `dishes_order`.`remark`
+        from `dishes_order`,
+             `sys_user`
+    </sql>
+
+    <select id="selectcustomerBillList" parameterType="com.pearadmin.system.domain.customerBill"
+            resultMap="customerBillResult">
+        <include refid="selectcustomerBillVo"/>
+        <where>
+            and `dishes_order`.`waiter_id`=`sys_user`.`user_id`
+            and `dishes_order`.`order_state`= 1
+            <if test="orderBeginTime != null ">and `order_begin_time` = #{orderBeginTime}</if>
+            <if test="orderEndTime != null ">and `order_end_time` = #{orderEndTime}</if>
+            <if test="waiterId != null ">and `waiter_id` = #{waiterId}</if>
+            <if test="orderState != null ">and `order_state` = #{orderState}</if>
+            <if test="tableId != null ">and `table_id` = #{tableId}</if>
+        </where>
+    </select>
+
+    <select id="selectcustomerBillById" parameterType="Long" resultMap="customerBillResult">
+        select `dishes_order`.`order_id`,
+               `dishes_order`.`order_begin_time`,
+               `dishes_order`.`order_end_time`,
+               `dishes_order`.`waiter_id`,
+               `sys_user`.`real_name`,
+               `dishes_order`.`order_state`,
+               `dishes_order`.`table_id`,
+               `dishes_order`.`remark`,
+               dishes_food.name,
+               dishes_food.price,
+               order_details.num,
+               sum(dishes_food.price * order_details.num) as line_count_price
+        from dishes_food,
+             dishes_order,
+             order_details,
+             `sys_user`
+        where dishes_order.order_id = order_details.order_reference
+          and order_details.dishes = dishes_food.id
+          and `dishes_order`.`waiter_id` = `sys_user`.`user_id`
+          and dishes_order.order_id = #{orderId}
+        GROUP BY dishes_food.name, dishes_food.price, order_details.num, `dishes_order`.`order_id`,
+                 `dishes_order`.`order_begin_time`, `dishes_order`.`order_end_time`, `dishes_order`.`waiter_id`,
+                 `sys_user`.`real_name`, `dishes_order`.`order_state`, `dishes_order`.`table_id`,
+                 `dishes_order`.`remark`
+    </select>
+
+    <select id="countPriceById" parameterType="Long" resultType="double">
+        select sum(dishes_food.price * order_details.num) as count_price
+        from dishes_food,
+             dishes_order,
+             order_details
+        where dishes_order.order_id = order_details.order_reference
+          and order_details.dishes = dishes_food.id
+          and dishes_order.order_id = #{orderId}
+    </select>
+
+    <insert id="insertcustomerBill" parameterType="com.pearadmin.system.domain.customerBill" useGeneratedKeys="true"
+            keyProperty="orderId">
+        insert into `dishes_order`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderBeginTime != null">`order_begin_time`,</if>
+            <if test="orderEndTime != null">`order_end_time`,</if>
+            <if test="waiterId != null">`waiter_id`,</if>
+            <if test="orderState != null">`order_state`,</if>
+            <if test="tableId != null">`table_id`,</if>
+            <if test="remark != null">`remark`,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderBeginTime != null">#{orderBeginTime},</if>
+            <if test="orderEndTime != null">#{orderEndTime},</if>
+            <if test="waiterId != null">#{waiterId},</if>
+            <if test="orderState != null">#{orderState},</if>
+            <if test="tableId != null">#{tableId},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updatecustomerBill" parameterType="com.pearadmin.system.domain.customerBill">
+        update `dishes_order`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderBeginTime != null">`order_begin_time` = #{orderBeginTime},</if>
+            <if test="orderEndTime != null">`order_end_time` = #{orderEndTime},</if>
+            <if test="waiterId != null">`waiter_id` = #{waiterId},</if>
+            <if test="orderState != null">`order_state` = #{orderState},</if>
+            <if test="tableId != null">`table_id` = #{tableId},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+        </trim>
+        where `order_id` = #{orderId}
+    </update>
+
+    <delete id="deletecustomerBillById" parameterType="Long">
+        delete
+        from `dishes_order`
+        where `order_id` = #{orderId}
+    </delete>
+
+    <delete id="deletecustomerBillByIds" parameterType="String">
+        delete from `dishes_order` where `order_id` in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+
+</mapper>

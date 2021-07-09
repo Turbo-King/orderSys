@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改菜品详情')"/>
+</head>
+<body>
+<form class="layui-form" th:object="${dishesFood}">
+    <div class="mainBox">
+        <div class="main-container">
+
+            <div class="layui-form-item" style="text-align: center">
+                <img th:src="*{pictureUrl}" style="width: 130px;height: 130px;border-radius: 50%;">
+            </div>
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜品名称：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" th:field="*{name}"  readonly="readonly" placeholder="请输入菜品名称" class="layui-input"
+                           lay-verify="required"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜品简介：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="introduction" th:field="*{introduction}" placeholder="请输入菜品简介"
+                           class="layui-input"  readOnly="readonly"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">推荐菜品：</label>
+                <!--        <div class="layui-input-block">-->
+                <!--            <input type="text" name="recommend" th:field="*{recommend}" placeholder="请输入推荐菜品" class="layui-input" />-->
+                <!--        </div>-->
+                <!-- 推荐菜品样式 -->
+                <div class="layui-input-block">
+                    <input type="checkbox" id="recommend" name="recommend" th:field="*{recommend}">
+                    <label class="recommend_true">
+                        ❤️推荐菜品
+                    </label>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜品详情：</label>
+                <div class="layui-input-block">
+                    <textarea name="details" placeholder="请输入菜品详情" class="layui-textarea" readOnly="readonly">[[*{details}]]</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">餐品价格：</label>
+                <div class="layui-input-block">
+                    <input type="text" name="price" th:field="*{price}" placeholder="请输入餐品价格" class="layui-input"
+                           lay-verify="required" readOnly="readonly"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+<th:block th:include="include :: footer"/>
+</html>

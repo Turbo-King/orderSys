@@ -66,10 +66,12 @@
                          {
                              field: 'tableId',
                              title: '订单的桌号',
+                             align: 'center',
                          },
                          {
                              field: 'waiterRealName',
-                             title: '点餐服务员'
+                             title: '点餐服务员',
+                             align: "center"
                          },
                          {
                              field: 'waiterId',
@@ -78,7 +80,7 @@
                          },
                         {
                              field: 'orderBeginTime',
-                             title: '订单开始时间'
+                             title: '开餐时间'
                         },
                         {
                              field: 'orderEndTime',
@@ -134,9 +136,11 @@
 
                  //点击餐桌买单
                  window.remove = function (obj) {
-                     layer.confirm(obj.data.tableId+'号桌订单确定买单么？', {icon: 3, title: '提示'}, function (index) {
+                     layer.confirm(obj.data.tableId+'号桌订单准备买单么？', {icon: 3, title: '提示'}, function (index) {
                          layer.close(index);
-                         obj.data.status = 1;
+                         obj.data.orderState = 1;
+                         //设置订单结单时间
+                         obj.data.orderEndTime = new Date().getTime();
                          $.ajax({
                              url: prefix+'update',
                              data: JSON.stringify(obj.data),

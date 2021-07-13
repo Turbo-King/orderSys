@@ -51,3 +51,13 @@
     display: block;
     font-weight: bolder;
 }
+
+/*退桌按钮展示*/
+.dishes-button {
+    width: 120px;
+    margin-top: 0;
+    float: right;
+    position: absolute;
+    right: 30px;
+    top: -0.5px;
+}

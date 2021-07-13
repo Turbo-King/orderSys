@@ -91,13 +91,20 @@ public class customerBillController extends BaseController {
     @GetMapping("/edit")
     @PreAuthorize("hasPermission('/dishes/customerBill/edit','dishes:customerBill:edit')")
     public ModelAndView edit(Long orderId, ModelMap mmap) {
-//        customerBill customerBill = customerBillService.selectcustomerBillById(orderId);
-        List<customerBill> customerBillList = customerBillService.selectcustomerBillById(orderId);
-        Double countPrice = customerBillService.countPriceById(orderId);
+        List<customerBill> customerBillList = null;
+        Double countPrice = null;
+        try {
+            customerBillList = customerBillService.selectcustomerBillById(orderId);
+            countPrice = customerBillService.countPriceById(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println(countPrice);
         System.out.println(Arrays.asList(customerBillList));
-        mmap.put("customerBillList", customerBillList);
-        mmap.put("countPrice", countPrice);
+        if (customerBillList != null && !customerBillList.isEmpty()) {
+            mmap.put("customerBillList", customerBillList);
+            mmap.put("countPrice", countPrice);
+        }
         return jumpPage(prefix + "/edit");
     }
 

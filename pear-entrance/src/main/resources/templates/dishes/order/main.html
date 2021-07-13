@@ -33,6 +33,9 @@
                 <div class="panel-heading" style="height: auto">
                     <h2 class="panel-title">菜品清单</h2>
                     <input type="hidden" value="" id="dishesId">
+                    <button type="button" class="btn btn-danger dishes-button" onclick="retreat()">
+                        退 桌
+                    </button>
                 </div>
                 <div class="panel-body" style="padding-bottom: 0px">
 
@@ -115,6 +118,31 @@
             content: "/dishes/order/add",
         });
     };
+
+    //退桌操作
+    function retreat() {
+        let dishesId = $('#dishesId').attr("value");
+        // console.log(dishesId);
+        layer.confirm('确定退桌么?', {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            let loading = layer.load();
+            $.ajax({
+                url: '/dishes/order/' + "remove/" + dishesId,
+                dataType: 'json',
+                type: 'delete',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        layer.msg("退桌成功", {icon: 1, time: 1000}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+        });
+    }
 
     // 获取所选菜品数量及名称
     function addOrder(form) {

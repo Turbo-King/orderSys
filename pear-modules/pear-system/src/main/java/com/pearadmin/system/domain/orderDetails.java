@@ -14,7 +14,7 @@ import java.util.Date;
  * \
  */
 @Data
-public class orderDetails extends BaseDomain {
+public class OrderDetails extends BaseDomain {
     private static final long serialVersionUID = 1L;
 
     /**

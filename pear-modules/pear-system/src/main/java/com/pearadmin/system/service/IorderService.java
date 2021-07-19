@@ -3,7 +3,7 @@ package com.pearadmin.system.service;
 import java.util.List;
 import com.github.pagehelper.PageInfo;
 import com.pearadmin.common.web.domain.request.PageDomain;
-import com.pearadmin.system.domain.order;
+import com.pearadmin.system.domain.Order;
 
 /**
  * 点餐订单Service接口
@@ -19,7 +19,7 @@ public interface IorderService
      * @param orderId 点餐订单ID
      * @return 点餐订单
      */
-    order selectorderById(Long orderId);
+    Order selectorderById(Long orderId);
 
 
     /**
@@ -28,7 +28,7 @@ public interface IorderService
      * @param pageDomain
      * @return 点餐订单 分页集合
      * */
-    PageInfo<order> selectorderPage(order order, PageDomain pageDomain);
+    PageInfo<Order> selectorderPage(Order order, PageDomain pageDomain);
 
     /**
      * 查询点餐订单列表
@@ -36,7 +36,7 @@ public interface IorderService
      * @param order 点餐订单
      * @return 点餐订单集合
      */
-    List<order> selectorderList(order order);
+    List<Order> selectorderList(Order order);
 
     /**
      * 新增点餐订单
@@ -44,7 +44,7 @@ public interface IorderService
      * @param order 点餐订单
      * @return 结果
      */
-    int insertorder(order order);
+    int insertorder(Order order);
 
     /**
      * 修改点餐订单
@@ -52,7 +52,7 @@ public interface IorderService
      * @param order 点餐订单
      * @return 结果
      */
-    int updateorder(order order);
+    int updateorder(Order order);
 
     /**
      * 批量删除点餐订单

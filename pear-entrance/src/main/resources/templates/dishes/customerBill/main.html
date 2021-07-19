@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:include="include :: header('顾客买单列表')"/>
+    <meta http-equiv="refresh" content="5">
 </head>
-<body class="pear-container">
+<body class="pear-container" name="divform">
 <div class="layui-card">
     <div class="layui-card-body">
         <div class="col-sm-12 search-collapse">
@@ -174,29 +175,40 @@
             });
         }
 
+        //在新标签页中 打开页面
+        function newTab(url, tit) {
+            if (top.layui.index) {
+                top.layui.index.openTabsPage(url, tit)
+            } else {
+                window.open(url)
+            }
+        }
+
         //顾客结账
         window.add = function (obj) {
             layer.confirm(obj.data.tableId + '号桌顾客确定结账么?', {icon: 3, title: '提示'}, function (index) {
                 layer.close(index);
-                //订单状态转换为已结账
-                obj.data.orderState = 2;
-                $.ajax({
-                    url: prefix + 'update',
-                    data: JSON.stringify(obj.data),
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    type: 'put',
-                    success: function (result) {
-                        if (result.success) {
-                            layer.msg(obj.data.tableId + "号桌顾客结账成功", {icon: 1, time: 1000}, function () {
-                                parent.layer.close(parent.layer.getFrameIndex(window.name));
-                                table.reload("customerBill-table");
-                            });
-                        } else {
-                            layer.msg(result.msg, {icon: 2, time: 1000});
-                        }
-                    }
-                })
+                // //订单状态转换为已结账
+                // obj.data.orderState = 2;
+                newTab('/dishes/customerBill/pay?orderId=' + obj.data.orderId, '餐桌结账')
+                // $.ajax({
+                //     url: '/dishes/customerBill/update',
+                //     data: {'orderId': obj.data.orderId},
+                //     // contentType: 'application/json',
+                //     type: 'POST',
+                //     success: function (result) {
+                //         console.log(result);
+                //         let htmlCont = result;//返回的结果页面
+                //         // layer.open({
+                //         //     type: 1,//弹出框类型
+                //         //     title: '支付宝支付',
+                //         //     shadeClose: 0.1, //点击遮罩关闭层
+                //         //     area: ['550px', '570px'],
+                //         //     content: htmlCont,//将结果页面放入layer弹出层中
+                //         // });
+                //
+                //     }
+                // })
             });
         }
 
@@ -211,6 +223,7 @@
             });
         }
 
+        //清理待结账账单
         window.batchRemove = function (obj) {
             let data = table.checkStatus(obj.config.id).data;
             if (data.length === 0) {
@@ -244,15 +257,11 @@
             });
         }
 
+        //刷新表单数据
         window.refresh = function (param) {
             table.reload('customerBill-table', {where: param});
         }
 
-        //日期选择器
-        laydate.render({
-            elem: '#expiredTimeDate',
-            format: "yyyy-MM-dd HH:mm:ss"
-        });
     })
 </script>
 </body>

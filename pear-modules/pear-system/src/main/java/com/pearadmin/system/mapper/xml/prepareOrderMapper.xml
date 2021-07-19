@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pearadmin.system.mapper.prepareOrderMapper">
+<mapper namespace="com.pearadmin.system.mapper.PrepareOrderMapper">
 
-    <resultMap type="com.pearadmin.system.domain.prepareOrder" id="prepareOrderResult">
+    <resultMap type="com.pearadmin.system.domain.PrepareOrder" id="prepareOrderResult">
         <result property="odId"    column="od_id"    />
         <result property="orderReference"    column="order_reference"    />
         <result property="tableId"    column="table_id"    />
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from `order_details`,`dishes_food`,`dishes_order`
     </sql>
 
-    <select id="selectprepareOrderList" parameterType="com.pearadmin.system.domain.prepareOrder" resultMap="prepareOrderResult">
+    <select id="selectprepareOrderList" parameterType="com.pearadmin.system.domain.PrepareOrder" resultMap="prepareOrderResult">
         <include refid="selectprepareOrderVo"/>
         <where>
             and `dishes_order`.`order_id` = `order_details`.`order_reference`
@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where `od_id` = #{odId}
     </select>
 
-    <insert id="insertprepareOrder" parameterType="com.pearadmin.system.domain.prepareOrder" useGeneratedKeys="true" keyProperty="odId">
+    <insert id="insertprepareOrder" parameterType="com.pearadmin.system.domain.PrepareOrder" useGeneratedKeys="true" keyProperty="odId">
         insert into `order_details`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderReference != null">`order_reference`,</if>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateprepareOrder" parameterType="com.pearadmin.system.domain.prepareOrder">
+    <update id="updateprepareOrder" parameterType="com.pearadmin.system.domain.PrepareOrder">
         update `order_details`
         <trim prefix="SET" suffixOverrides=",">
             <if test="orderReference != null">`order_reference` = #{orderReference},</if>

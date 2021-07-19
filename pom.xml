@@ -89,6 +89,7 @@
     <!-- 依 赖 管 理 -->
     <dependencyManagement>
         <dependencies>
+
             <!-- 常 用 工 具 类 -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -268,7 +269,6 @@
     </dependencyManagement>
 
 
-
     <!-- 继 承 依 赖 -->
     <dependencies>
         <!-- Lombok -->
@@ -296,7 +296,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <aggregate>true</aggregate>
-	            </configuration>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

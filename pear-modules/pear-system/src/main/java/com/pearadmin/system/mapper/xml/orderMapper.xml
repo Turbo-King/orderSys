@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pearadmin.system.mapper.orderMapper">
+<mapper namespace="com.pearadmin.system.mapper.OrderMapper">
 
-    <resultMap type="com.pearadmin.system.domain.order" id="orderResult">
+    <resultMap type="com.pearadmin.system.domain.Order" id="orderResult">
         <result property="orderId"    column="order_id"    />
         <result property="orderBeginTime"    column="order_begin_time"    />
         <result property="orderEndTime"    column="order_end_time"    />
@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select`order_id`,`order_begin_time`,`order_end_time`,`waiter_id`,`order_state`,`table_id`,`remark` from `dishes_order`
     </sql>
 
-    <select id="selectorderList" parameterType="com.pearadmin.system.domain.order" resultMap="orderResult">
+    <select id="selectorderList" parameterType="com.pearadmin.system.domain.Order" resultMap="orderResult">
         <include refid="selectorderVo"/>
         <where>
             <if test="orderBeginTime != null "> and `order_begin_time` = #{orderBeginTime}</if>
@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where `order_id` = #{orderId}
     </select>
 
-    <insert id="insertorder" parameterType="com.pearadmin.system.domain.order" useGeneratedKeys="true" keyProperty="orderId">
+    <insert id="insertorder" parameterType="com.pearadmin.system.domain.Order" useGeneratedKeys="true" keyProperty="orderId">
         insert into `dishes_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderBeginTime != null">`order_begin_time`,</if>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateorder" parameterType="com.pearadmin.system.domain.order">
+    <update id="updateorder" parameterType="com.pearadmin.system.domain.Order">
         update `dishes_order`
         <trim prefix="SET" suffixOverrides=",">
             <if test="orderBeginTime != null">`order_begin_time` = #{orderBeginTime},</if>

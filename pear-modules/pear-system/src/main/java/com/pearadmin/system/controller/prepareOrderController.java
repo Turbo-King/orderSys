@@ -1,7 +1,7 @@
 package com.pearadmin.system.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.pearadmin.system.domain.prepareOrder;
+import com.pearadmin.system.domain.PrepareOrder;
 import com.pearadmin.common.tools.string.Convert;
 import com.pearadmin.common.web.base.BaseController;
 import com.pearadmin.common.web.domain.request.PageDomain;
@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
  */
 @RestController
 @RequestMapping("/dishes/prepareOrder")
-public class prepareOrderController extends BaseController
+public class PrepareOrderController extends BaseController
 {
     private String prefix = "dishes/prepareOrder";
 
@@ -46,9 +46,9 @@ public class prepareOrderController extends BaseController
     @ResponseBody
     @GetMapping("/data")
     @PreAuthorize("hasPermission('/dishes/prepareOrder/data','dishes:prepareOrder:data')")
-    public ResultTable list(@ModelAttribute prepareOrder prepareOrder, PageDomain pageDomain)
+    public ResultTable list(@ModelAttribute PrepareOrder prepareOrder, PageDomain pageDomain)
     {
-        PageInfo<prepareOrder> pageInfo = prepareOrderService.selectprepareOrderPage(prepareOrder,pageDomain);
+        PageInfo<PrepareOrder> pageInfo = prepareOrderService.selectprepareOrderPage(prepareOrder,pageDomain);
         return pageTable(pageInfo.getList(),pageInfo.getTotal());
     }
 
@@ -68,7 +68,7 @@ public class prepareOrderController extends BaseController
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasPermission('/dishes/prepareOrder/add','dishes:prepareOrder:add')")
-    public Result save(@RequestBody prepareOrder prepareOrder)
+    public Result save(@RequestBody PrepareOrder prepareOrder)
     {
         SysUser sysUser = (SysUser)SecurityUtil.currentUserObj();
         prepareOrder.setCreateTime(LocalDateTime.now());
@@ -84,7 +84,7 @@ public class prepareOrderController extends BaseController
     @PreAuthorize("hasPermission('/dishes/prepareOrder/edit','dishes:prepareOrder:edit')")
     public ModelAndView edit(Long odId, ModelMap mmap)
     {
-        prepareOrder prepareOrder = prepareOrderService.selectprepareOrderById(odId);
+        PrepareOrder prepareOrder = prepareOrderService.selectprepareOrderById(odId);
         mmap.put("prepareOrder", prepareOrder);
         return jumpPage(prefix + "/edit");
     }
@@ -95,7 +95,7 @@ public class prepareOrderController extends BaseController
     @ResponseBody
     @PutMapping("/update")
     @PreAuthorize("hasPermission('/dishes/prepareOrder/edit','dishes:prepareOrder:edit')")
-    public Result update(@RequestBody prepareOrder prepareOrder)
+    public Result update(@RequestBody PrepareOrder prepareOrder)
     {
         SysUser sysUser = (SysUser)SecurityUtil.currentUserObj();
         prepareOrder.setUpdateTime(LocalDateTime.now());

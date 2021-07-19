@@ -17,7 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @date 2021-07-06
  */
 @Data
-public class customerBill extends BaseDomain {
+public class CustomerBill extends BaseDomain {
     private static final long serialVersionUID = 1L;
 
     /**

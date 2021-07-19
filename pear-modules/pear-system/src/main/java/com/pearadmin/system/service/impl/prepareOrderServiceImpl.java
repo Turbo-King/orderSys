@@ -1,15 +1,14 @@
 package com.pearadmin.system.service.impl;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pearadmin.common.web.domain.request.PageDomain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.pearadmin.system.mapper.prepareOrderMapper;
-import com.pearadmin.system.domain.prepareOrder;
+import com.pearadmin.system.mapper.PrepareOrderMapper;
+import com.pearadmin.system.domain.PrepareOrder;
 import com.pearadmin.system.service.IprepareOrderService;
 
 /**
@@ -19,10 +18,10 @@ import com.pearadmin.system.service.IprepareOrderService;
  * @date 2021-07-05
  */
 @Service
-public class prepareOrderServiceImpl implements IprepareOrderService 
+public class PrepareOrderServiceImpl implements IprepareOrderService
 {
     @Autowired
-    private prepareOrderMapper prepareOrderMapper;
+    private PrepareOrderMapper prepareOrderMapper;
 
     /**
      * 查询后厨备餐表
@@ -31,7 +30,7 @@ public class prepareOrderServiceImpl implements IprepareOrderService
      * @return 后厨备餐表
      */
     @Override
-    public prepareOrder selectprepareOrderById(Long odId)
+    public PrepareOrder selectprepareOrderById(Long odId)
     {
         return prepareOrderMapper.selectprepareOrderById(odId);
     }
@@ -43,7 +42,7 @@ public class prepareOrderServiceImpl implements IprepareOrderService
      * @return 后厨备餐表
      */
     @Override
-    public List<prepareOrder> selectprepareOrderList(prepareOrder prepareOrder)
+    public List<PrepareOrder> selectprepareOrderList(PrepareOrder prepareOrder)
     {
         return prepareOrderMapper.selectprepareOrderList(prepareOrder);
     }
@@ -55,10 +54,10 @@ public class prepareOrderServiceImpl implements IprepareOrderService
      * @return 后厨备餐表 分页集合
      * */
     @Override
-    public PageInfo<prepareOrder> selectprepareOrderPage(prepareOrder prepareOrder, PageDomain pageDomain)
+    public PageInfo<PrepareOrder> selectprepareOrderPage(PrepareOrder prepareOrder, PageDomain pageDomain)
     {
         PageHelper.startPage(pageDomain.getPage(),pageDomain.getLimit());
-        List<prepareOrder> data = prepareOrderMapper.selectprepareOrderList(prepareOrder);
+        List<PrepareOrder> data = prepareOrderMapper.selectprepareOrderList(prepareOrder);
         return new PageInfo<>(data);
     }
 
@@ -70,7 +69,7 @@ public class prepareOrderServiceImpl implements IprepareOrderService
      */
 
     @Override
-    public int insertprepareOrder(prepareOrder prepareOrder)
+    public int insertprepareOrder(PrepareOrder prepareOrder)
     {
         return prepareOrderMapper.insertprepareOrder(prepareOrder);
     }
@@ -82,7 +81,7 @@ public class prepareOrderServiceImpl implements IprepareOrderService
      * @return 结果
      */
     @Override
-    public int updateprepareOrder(prepareOrder prepareOrder)
+    public int updateprepareOrder(PrepareOrder prepareOrder)
     {
         return prepareOrderMapper.updateprepareOrder(prepareOrder);
     }

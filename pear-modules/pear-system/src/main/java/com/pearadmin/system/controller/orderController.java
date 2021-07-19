@@ -1,6 +1,5 @@
 package com.pearadmin.system.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.pearadmin.system.domain.*;
 import com.pearadmin.common.tools.string.Convert;
@@ -29,7 +28,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/dishes/order")
-public class orderController extends BaseController {
+public class OrderController extends BaseController {
     private String prefix = "dishes/order";
 
     @Autowired
@@ -54,8 +53,8 @@ public class orderController extends BaseController {
     @ResponseBody
     @GetMapping("/data")
     @PreAuthorize("hasPermission('/dishes/order/data','dishes:order:data')")
-    public ResultTable list(@ModelAttribute order order, PageDomain pageDomain) {
-        PageInfo<order> pageInfo = orderService.selectorderPage(order, pageDomain);
+    public ResultTable list(@ModelAttribute Order order, PageDomain pageDomain) {
+        PageInfo<Order> pageInfo = orderService.selectorderPage(order, pageDomain);
         return pageTable(pageInfo.getList(), pageInfo.getTotal());
     }
 
@@ -74,7 +73,7 @@ public class orderController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasPermission('/dishes/order/add','dishes:order:add')")
-    public Result save(@RequestBody order order) {
+    public Result save(@RequestBody Order order) {
         SysUser sysUser = (SysUser) SecurityUtil.currentUserObj();
         order.setCreateTime(LocalDateTime.now());
         order.setCreateBy(sysUser.getUserId());
@@ -99,7 +98,7 @@ public class orderController extends BaseController {
     @ResponseBody
     @PutMapping("/update")
     @PreAuthorize("hasPermission('/dishes/order/edit','dishes:order:edit')")
-    public Result update(@RequestBody order order) {
+    public Result update(@RequestBody Order order) {
         SysUser sysUser = (SysUser) SecurityUtil.currentUserObj();
         order.setUpdateTime(LocalDateTime.now());
         order.setUpdateBy(sysUser.getUserId());
@@ -125,7 +124,7 @@ public class orderController extends BaseController {
     @PostMapping("/placeOrder")
     public Result placeOrder(@RequestParam String[][] DishesOrderDetail, String orderReference) {
         int sucess = 0;
-        prepareOrder prepareOrder = new prepareOrder();
+        PrepareOrder prepareOrder = new PrepareOrder();
         for (String[] str : DishesOrderDetail) {
             prepareOrder.setDishes(Long.valueOf(str[0]));
             prepareOrder.setNum(Long.valueOf(str[1]));
@@ -143,7 +142,7 @@ public class orderController extends BaseController {
     @PostMapping("/createOrder")
     public Result createOrder(@RequestParam Integer tableId) {
         int sucess = 0;
-        order order = new order();
+        Order order = new Order();
         order.setOrderBeginTime(new Date());
         order.setWaiterId("1309861917694623744");
         order.setOrderState(0);

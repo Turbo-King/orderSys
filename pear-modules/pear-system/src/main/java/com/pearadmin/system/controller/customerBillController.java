@@ -1,7 +1,7 @@
 package com.pearadmin.system.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.pearadmin.system.domain.customerBill;
+import com.pearadmin.system.domain.CustomerBill;
 import com.pearadmin.common.tools.string.Convert;
 import com.pearadmin.common.web.base.BaseController;
 import com.pearadmin.common.web.domain.request.PageDomain;
@@ -9,6 +9,7 @@ import com.pearadmin.common.web.domain.response.Result;
 import com.pearadmin.common.web.domain.response.module.ResultTable;
 import com.pearadmin.common.tools.secure.SecurityUtil;
 import com.pearadmin.system.domain.SysUser;
+import com.pearadmin.system.service.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
@@ -28,16 +29,24 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dishes/customerBill")
-public class customerBillController extends BaseController {
+public class CustomerBillController extends BaseController {
     private String prefix = "dishes/customerBill";
 
     @Autowired
     private IcustomerBillService customerBillService;
+    @Autowired
+    private IPayService payService;
 
     @GetMapping("/main")
     @PreAuthorize("hasPermission('/dishes/customerBill/main','dishes:customerBill:main')")
     public ModelAndView main() {
         return jumpPage(prefix + "/main");
+    }
+
+
+    @GetMapping("/paySuccess")
+    public ModelAndView paySuccess() {
+        return jumpPage(prefix + "/paySuccess");
     }
 
     /**
@@ -46,8 +55,8 @@ public class customerBillController extends BaseController {
     @ResponseBody
     @GetMapping("/data")
     @PreAuthorize("hasPermission('/dishes/customerBill/data','dishes:customerBill:data')")
-    public ResultTable list(@ModelAttribute customerBill customerBill, PageDomain pageDomain) {
-        PageInfo<customerBill> pageInfo = customerBillService.selectcustomerBillPage(customerBill, pageDomain);
+    public ResultTable list(@ModelAttribute CustomerBill customerBill, PageDomain pageDomain) {
+        PageInfo<CustomerBill> pageInfo = customerBillService.selectcustomerBillPage(customerBill, pageDomain);
         return pageTable(pageInfo.getList(), pageInfo.getTotal());
     }
 
@@ -66,7 +75,7 @@ public class customerBillController extends BaseController {
     @ResponseBody
     @PostMapping("/save")
     @PreAuthorize("hasPermission('/dishes/customerBill/add','dishes:customerBill:add')")
-    public Result save(@RequestBody customerBill customerBill) {
+    public Result save(@RequestBody CustomerBill customerBill) {
         SysUser sysUser = (SysUser) SecurityUtil.currentUserObj();
         customerBill.setCreateTime(LocalDateTime.now());
         customerBill.setCreateBy(sysUser.getUserId());
@@ -74,24 +83,14 @@ public class customerBillController extends BaseController {
         return decide(customerBillService.insertcustomerBill(customerBill));
     }
 
-//    /**
-//     * 修改顾客买单
-//     */
-//    @GetMapping("/edit")
-//    @PreAuthorize("hasPermission('/dishes/customerBill/edit','dishes:customerBill:edit')")
-//    public ModelAndView edit(Long orderId, ModelMap mmap) {
-//        customerBill customerBill = customerBillService.selectcustomerBillById(orderId);
-//        mmap.put("customerBill", customerBill);
-//        return jumpPage(prefix + "/edit");
-//    }
 
     /**
-     * 顾客买单详情
+     * 顾客结账详情
      */
     @GetMapping("/edit")
     @PreAuthorize("hasPermission('/dishes/customerBill/edit','dishes:customerBill:edit')")
     public ModelAndView edit(Long orderId, ModelMap mmap) {
-        List<customerBill> customerBillList = null;
+        List<CustomerBill> customerBillList = null;
         Double countPrice = null;
         try {
             customerBillList = customerBillService.selectcustomerBillById(orderId);
@@ -109,17 +108,45 @@ public class customerBillController extends BaseController {
     }
 
     /**
-     * 修改保存顾客买单
+     * 顾客结账或免单
      */
     @ResponseBody
     @PutMapping("/update")
-    @PreAuthorize("hasPermission('/dishes/customerBill/edit','dishes:customerBill:edit')")
-    public Result update(@RequestBody customerBill customerBill) {
+    public Result update(@RequestBody CustomerBill customerBill) {
         SysUser sysUser = (SysUser) SecurityUtil.currentUserObj();
         customerBill.setUpdateTime(LocalDateTime.now());
         customerBill.setUpdateBy(sysUser.getUserId());
         customerBill.setUpdateName(sysUser.getUsername());
         return decide(customerBillService.updatecustomerBill(customerBill));
+    }
+
+
+    /**
+     * 顾客账单支付
+     */
+    @ResponseBody
+    @GetMapping("/pay")
+    public ModelAndView pay(Long orderId, ModelMap mmap) {
+        //更新订单为结账订单
+        CustomerBill customerBill = new CustomerBill();
+        customerBill = customerBillService.selectOrderById(orderId);
+        customerBill.setOrderState(2);
+        update(customerBill);
+
+        //订单详情
+        List<CustomerBill> customerBillList = null;
+        //订单总价
+        Double countPrice = null;
+        try {
+            customerBillList = customerBillService.selectcustomerBillById(orderId);
+            countPrice = customerBillService.countPriceById(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mmap.put("customerBillList", customerBillList);
+        mmap.put("countPrice", countPrice);
+        return jumpPage(prefix + "/alipayFrom");
     }
 
     /**

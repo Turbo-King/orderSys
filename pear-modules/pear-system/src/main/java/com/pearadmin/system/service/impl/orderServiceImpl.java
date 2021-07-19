@@ -1,15 +1,14 @@
 package com.pearadmin.system.service.impl;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pearadmin.common.web.domain.request.PageDomain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.pearadmin.system.mapper.orderMapper;
-import com.pearadmin.system.domain.order;
+import com.pearadmin.system.mapper.OrderMapper;
+import com.pearadmin.system.domain.Order;
 import com.pearadmin.system.service.IorderService;
 
 /**
@@ -19,10 +18,10 @@ import com.pearadmin.system.service.IorderService;
  * @date 2021-07-07
  */
 @Service
-public class orderServiceImpl implements IorderService 
+public class OrderServiceImpl implements IorderService
 {
     @Autowired
-    private orderMapper orderMapper;
+    private OrderMapper orderMapper;
 
     /**
      * 查询点餐订单
@@ -31,7 +30,7 @@ public class orderServiceImpl implements IorderService
      * @return 点餐订单
      */
     @Override
-    public order selectorderById(Long orderId)
+    public Order selectorderById(Long orderId)
     {
         return orderMapper.selectorderById(orderId);
     }
@@ -43,7 +42,7 @@ public class orderServiceImpl implements IorderService
      * @return 点餐订单
      */
     @Override
-    public List<order> selectorderList(order order)
+    public List<Order> selectorderList(Order order)
     {
         return orderMapper.selectorderList(order);
     }
@@ -55,10 +54,10 @@ public class orderServiceImpl implements IorderService
      * @return 点餐订单 分页集合
      * */
     @Override
-    public PageInfo<order> selectorderPage(order order, PageDomain pageDomain)
+    public PageInfo<Order> selectorderPage(Order order, PageDomain pageDomain)
     {
         PageHelper.startPage(pageDomain.getPage(),pageDomain.getLimit());
-        List<order> data = orderMapper.selectorderList(order);
+        List<Order> data = orderMapper.selectorderList(order);
         return new PageInfo<>(data);
     }
 
@@ -70,7 +69,7 @@ public class orderServiceImpl implements IorderService
      */
 
     @Override
-    public int insertorder(order order)
+    public int insertorder(Order order)
     {
         return orderMapper.insertorder(order);
     }
@@ -82,7 +81,7 @@ public class orderServiceImpl implements IorderService
      * @return 结果
      */
     @Override
-    public int updateorder(order order)
+    public int updateorder(Order order)
     {
         return orderMapper.updateorder(order);
     }

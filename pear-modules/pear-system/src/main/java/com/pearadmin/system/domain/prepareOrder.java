@@ -12,7 +12,7 @@ import com.pearadmin.common.web.base.BaseDomain;
  * @date 2021-07-05
  */
 @Data
-public class prepareOrder extends BaseDomain
+public class PrepareOrder extends BaseDomain
 {
     private static final long serialVersionUID = 1L;
 

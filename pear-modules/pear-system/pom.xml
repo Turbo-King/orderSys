@@ -18,6 +18,13 @@
 
     <!-- 引 用 依 赖 -->
     <dependencies>
+        <!-- 支付宝SDK-->
+        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-easysdk -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-easysdk</artifactId>
+            <version>2.2.0</version>
+        </dependency>
         <!-- 公用模块 -->
         <dependency>
             <groupId>com.pearadmin</groupId>

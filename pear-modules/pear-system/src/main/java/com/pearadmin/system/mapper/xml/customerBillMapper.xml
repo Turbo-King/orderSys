@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pearadmin.system.mapper.customerBillMapper">
+<mapper namespace="com.pearadmin.system.mapper.CustomerBillMapper">
 
-    <resultMap type="com.pearadmin.system.domain.customerBill" id="customerBillResult">
+    <resultMap type="com.pearadmin.system.domain.CustomerBill" id="customerBillResult">
         <result property="orderId" column="order_id"/>
         <result property="orderBeginTime" column="order_begin_time"/>
         <result property="orderEndTime" column="order_end_time"/>
@@ -33,7 +33,7 @@
              `sys_user`
     </sql>
 
-    <select id="selectcustomerBillList" parameterType="com.pearadmin.system.domain.customerBill"
+    <select id="selectcustomerBillList" parameterType="com.pearadmin.system.domain.CustomerBill"
             resultMap="customerBillResult">
         <include refid="selectcustomerBillVo"/>
         <where>
@@ -74,6 +74,13 @@
                  `dishes_order`.`remark`
     </select>
 
+    <select id="selectOrderById" parameterType="Long" resultMap="customerBillResult">
+        <include refid="selectcustomerBillVo"/>
+        where `dishes_order`.order_id=#{orderId}
+        and `dishes_order`.`waiter_id`=`sys_user`.`user_id`
+        and `dishes_order`.`order_state`= 1
+    </select>
+
     <select id="countPriceById" parameterType="Long" resultType="double">
         select sum(dishes_food.price * order_details.num) as count_price
         from dishes_food,
@@ -84,7 +91,7 @@
           and dishes_order.order_id = #{orderId}
     </select>
 
-    <insert id="insertcustomerBill" parameterType="com.pearadmin.system.domain.customerBill" useGeneratedKeys="true"
+    <insert id="insertcustomerBill" parameterType="com.pearadmin.system.domain.CustomerBill" useGeneratedKeys="true"
             keyProperty="orderId">
         insert into `dishes_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -105,7 +112,7 @@
         </trim>
     </insert>
 
-    <update id="updatecustomerBill" parameterType="com.pearadmin.system.domain.customerBill">
+    <update id="updatecustomerBill" parameterType="com.pearadmin.system.domain.CustomerBill">
         update `dishes_order`
         <trim prefix="SET" suffixOverrides=",">
             <if test="orderBeginTime != null">`order_begin_time` = #{orderBeginTime},</if>

@@ -39,12 +39,11 @@
         </script>
 
         <script type="text/html" id="prepareOrder-bar">
-            <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"
-                    class="pear-btn pear-btn-primary pear-btn-sm startCooking-primary" lay-event="remove">
+            <button class="pear-btn pear-btn-primary pear-btn-sm startCooking-primary"
+                    lay-event="remove">
                 开始烹饪
             </button>
-            <button sec:authorize="hasPermission('/dishes/prepareOrder/remove','dishes:prepareOrder:remove')"
-                    class="pear-btn pear-btn-danger pear-btn-sm startCooking-danger" lay-event="remove">
+            <button class="pear-btn pear-btn-danger pear-btn-sm startCooking-danger" lay-event="endCooking">
                 正在烹饪
             </button>
         </script>
@@ -52,6 +51,11 @@
 </div>
 <th:block th:include="include :: footer"/>
 <script>
+    function disableButton(current) {
+        $(current).addClass("layui-btn-disabled").attr("disabled", true);
+
+    }
+
     layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
         let table = layui.table;
         let form = layui.form;
@@ -117,6 +121,9 @@
         table.on('tool(prepareOrder-table)', function (obj) {
             if (obj.event === 'remove') {
                 window.remove(obj);
+                disableButton(this);
+            }else if (obj.event === 'endCooking') {
+                window.endCooking(obj);
             }
         });
 
@@ -137,6 +144,31 @@
         //点击开始烹饪菜品
         window.remove = function (obj) {
             layer.confirm('开始烹饪' + obj.data.dishesName + "?", {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                obj.data.status += 1;
+                $.ajax({
+                    url: prefix + 'update',
+                    data: JSON.stringify(obj.data),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'put',
+                    success: function (result) {
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                // table.reload("prepareOrder-table");
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        //点击烹饪完成菜品
+        window.endCooking = function (obj) {
+            layer.confirm('结束烹饪' + obj.data.dishesName + "?", {icon: 3, title: '提示'}, function (index) {
                 layer.close(index);
                 obj.data.status += 1;
                 $.ajax({

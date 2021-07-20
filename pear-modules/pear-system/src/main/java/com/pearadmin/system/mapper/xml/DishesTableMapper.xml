@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.system.mapper.DishesTableMapper">
+
+    <resultMap type="com.pearadmin.system.domain.DishesTable" id="DishesTableResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectDishesTableVo">
+        select `id`, `name` , `status`, `remark`
+        from `dishes_table`
+    </sql>
+
+    <select id="selectDishesTableList" parameterType="com.pearadmin.system.domain.DishesTable"
+            resultMap="DishesTableResult">
+        <include refid="selectDishesTableVo"/>
+        <where>
+            <if test="name != null  and name != ''">and `name` like concat('%', #{name}, '%')</if>
+            <if test="status != null ">and `status` = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectDishesTableById" parameterType="Long" resultMap="DishesTableResult">
+        <include refid="selectDishesTableVo"/>
+        where `id` = #{id}
+    </select>
+
+    <select id="selectTableList" resultMap="DishesTableResult">
+        <include refid="selectDishesTableVo"/>
+        where status=0
+    </select>
+
+    <insert id="insertDishesTable" parameterType="com.pearadmin.system.domain.DishesTable" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into `dishes_table`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">`name`,</if>
+            <if test="status != null">`status`,</if>
+            <if test="remark != null">`remark`,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDishesTable" parameterType="com.pearadmin.system.domain.DishesTable">
+        update `dishes_table`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">`name` = #{name},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="remark != null">`remark` = #{remark},</if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteDishesTableById" parameterType="Long">
+        delete
+        from `dishes_table`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteDishesTableByIds" parameterType="String">
+        delete from `dishes_table` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

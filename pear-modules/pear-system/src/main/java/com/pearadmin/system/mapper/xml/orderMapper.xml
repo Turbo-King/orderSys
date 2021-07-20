@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pearadmin.system.mapper.OrderMapper">
 
     <resultMap type="com.pearadmin.system.domain.Order" id="orderResult">
-        <result property="orderId"    column="order_id"    />
-        <result property="orderBeginTime"    column="order_begin_time"    />
-        <result property="orderEndTime"    column="order_end_time"    />
-        <result property="waiterId"    column="waiter_id"    />
-        <result property="orderState"    column="order_state"    />
-        <result property="tableId"    column="table_id"    />
-        <result property="remark"    column="remark"    />
+        <result property="orderId" column="order_id"/>
+        <result property="orderBeginTime" column="order_begin_time"/>
+        <result property="orderEndTime" column="order_end_time"/>
+        <result property="waiterId" column="waiter_id"/>
+        <result property="orderState" column="order_state"/>
+        <result property="tableId" column="table_id"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectorderVo">
-        select`order_id`,`order_begin_time`,`order_end_time`,`waiter_id`,`order_state`,`table_id`,`remark` from `dishes_order`
+        select `order_id`, `order_begin_time`, `order_end_time`, `waiter_id`, `order_state`, `table_id`, `remark`
+        from `dishes_order`
     </sql>
 
     <select id="selectorderList" parameterType="com.pearadmin.system.domain.Order" resultMap="orderResult">
         <include refid="selectorderVo"/>
         <where>
-            <if test="orderBeginTime != null "> and `order_begin_time` = #{orderBeginTime}</if>
-            <if test="orderEndTime != null "> and `order_end_time` = #{orderEndTime}</if>
-            <if test="waiterId != null "> and `waiter_id` = #{waiterId}</if>
-            <if test="orderState != null "> and `order_state` = #{orderState}</if>
-            <if test="tableId != null "> and `table_id` = #{tableId}</if>
+            <if test="orderBeginTime != null ">and `order_begin_time` = #{orderBeginTime}</if>
+            <if test="orderEndTime != null ">and `order_end_time` = #{orderEndTime}</if>
+            <if test="waiterId != null ">and `waiter_id` = #{waiterId}</if>
+            <if test="orderState != null ">and `order_state` = #{orderState}</if>
+            <if test="tableId != null ">and `table_id` = #{tableId}</if>
         </where>
     </select>
 
@@ -34,7 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where `order_id` = #{orderId}
     </select>
 
-    <insert id="insertorder" parameterType="com.pearadmin.system.domain.Order" useGeneratedKeys="true" keyProperty="orderId">
+
+    <insert id="insertorder" parameterType="com.pearadmin.system.domain.Order" useGeneratedKeys="true"
+            keyProperty="orderId">
         insert into `dishes_order`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="orderBeginTime != null">`order_begin_time`,</if>
@@ -43,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderState != null">`order_state`,</if>
             <if test="tableId != null">`table_id`,</if>
             <if test="remark != null">`remark`,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderBeginTime != null">#{orderBeginTime},</if>
             <if test="orderEndTime != null">#{orderEndTime},</if>
@@ -51,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderState != null">#{orderState},</if>
             <if test="tableId != null">#{tableId},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateorder" parameterType="com.pearadmin.system.domain.Order">
@@ -68,7 +71,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteorderById" parameterType="Long">
-        delete from `dishes_order` where `order_id` = #{orderId}
+        delete
+        from `dishes_order`
+        where `order_id` = #{orderId}
     </delete>
 
     <delete id="deleteorderByIds" parameterType="String">

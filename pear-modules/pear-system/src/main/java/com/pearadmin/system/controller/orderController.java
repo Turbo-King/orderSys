@@ -9,13 +9,14 @@ import com.pearadmin.common.web.domain.response.Result;
 import com.pearadmin.common.web.domain.response.module.ResultTable;
 import com.pearadmin.common.tools.secure.SecurityUtil;
 import com.pearadmin.system.service.IDishesFoodService;
+import com.pearadmin.system.service.IDishesTableService;
 import com.pearadmin.system.service.IprepareOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import com.pearadmin.system.service.IorderService;
+import com.pearadmin.system.service.IOrderService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,11 +33,13 @@ public class OrderController extends BaseController {
     private String prefix = "dishes/order";
 
     @Autowired
-    private IorderService orderService;
+    private IOrderService orderService;
     @Autowired
     private IDishesFoodService iDishesFoodService;
     @Autowired
     private IprepareOrderService iprepareOrderService;
+    @Autowired
+    private IDishesTableService iDishesTableService;
 
     @GetMapping("/main")
     @PreAuthorize("hasPermission('/dishes/order/main','dishes:order:main')")
@@ -64,6 +67,18 @@ public class OrderController extends BaseController {
     @GetMapping("/add")
     @PreAuthorize("hasPermission('/dishes/order/add','dishes:order:add')")
     public ModelAndView add() {
+        return jumpPage(prefix + "/add");
+    }
+
+
+    /**
+     * 检查餐桌是否有顾客正在用餐
+     */
+    @GetMapping("/tableOrder")
+    public ModelAndView tableOrder(ModelMap mmap) {
+        List<DishesTable> dishesTableList = iDishesTableService.selectTableList();
+        System.out.println(Arrays.asList(dishesTableList));
+        mmap.put("dishesTableList", dishesTableList);
         return jumpPage(prefix + "/add");
     }
 
@@ -143,11 +158,15 @@ public class OrderController extends BaseController {
     public Result createOrder(@RequestParam Integer tableId) {
         int sucess = 0;
         Order order = new Order();
+        DishesTable dishesTable = new DishesTable();
+        dishesTable.setId(tableId);
+        dishesTable.setStatus(1);
         order.setOrderBeginTime(new Date());
         order.setWaiterId("1309861917694623744");
         order.setOrderState(0);
         order.setTableId(tableId);
         sucess = orderService.insertorder(order);
+        iDishesTableService.updateDishesTable(dishesTable);
         return success(sucess, "操作成功", String.valueOf(order.getOrderId()));
     }
 

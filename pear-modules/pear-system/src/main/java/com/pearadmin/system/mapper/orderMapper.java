@@ -1,5 +1,6 @@
 package com.pearadmin.system.mapper;
 
+import com.pearadmin.system.domain.DishesTable;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 import com.pearadmin.system.domain.Order;

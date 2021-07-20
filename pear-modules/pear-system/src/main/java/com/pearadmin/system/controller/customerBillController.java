@@ -8,7 +8,9 @@ import com.pearadmin.common.web.domain.request.PageDomain;
 import com.pearadmin.common.web.domain.response.Result;
 import com.pearadmin.common.web.domain.response.module.ResultTable;
 import com.pearadmin.common.tools.secure.SecurityUtil;
+import com.pearadmin.system.domain.DishesTable;
 import com.pearadmin.system.domain.SysUser;
+import com.pearadmin.system.service.IDishesTableService;
 import com.pearadmin.system.service.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +37,7 @@ public class CustomerBillController extends BaseController {
     @Autowired
     private IcustomerBillService customerBillService;
     @Autowired
-    private IPayService payService;
+    private IDishesTableService iDishesTableService;
 
     @GetMapping("/main")
     @PreAuthorize("hasPermission('/dishes/customerBill/main','dishes:customerBill:main')")
@@ -117,6 +119,11 @@ public class CustomerBillController extends BaseController {
         customerBill.setUpdateTime(LocalDateTime.now());
         customerBill.setUpdateBy(sysUser.getUserId());
         customerBill.setUpdateName(sysUser.getUsername());
+        //将餐桌定位空位
+        DishesTable dishesTable = new DishesTable();
+        dishesTable.setId(customerBill.getTableId());
+        dishesTable.setStatus(0);
+        iDishesTableService.updateDishesTable(dishesTable);
         return decide(customerBillService.updatecustomerBill(customerBill));
     }
 
@@ -143,6 +150,7 @@ public class CustomerBillController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
         mmap.put("customerBillList", customerBillList);
         mmap.put("countPrice", countPrice);

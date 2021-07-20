@@ -3,6 +3,7 @@ package com.pearadmin.system.service;
 import java.util.List;
 import com.github.pagehelper.PageInfo;
 import com.pearadmin.common.web.domain.request.PageDomain;
+import com.pearadmin.system.domain.DishesTable;
 import com.pearadmin.system.domain.Order;
 
 /**
@@ -11,7 +12,7 @@ import com.pearadmin.system.domain.Order;
  * @author wzh
  * @date 2021-07-07
  */
-public interface IorderService 
+public interface IOrderService
 {
     /**
      * 查询点餐订单
@@ -37,6 +38,7 @@ public interface IorderService
      * @return 点餐订单集合
      */
     List<Order> selectorderList(Order order);
+
 
     /**
      * 新增点餐订单

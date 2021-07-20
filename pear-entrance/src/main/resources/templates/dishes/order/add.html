@@ -4,42 +4,45 @@
     <th:block th:include="include :: header('选择餐桌')"/>
 </head>
 <body>
-<div class="tableDiv" value="1" onclick="selectTable(this)">
+
+<div class="tableDiv" th:value="${dishesTable.id}" onclick="selectTable(this)"
+     th:each="dishesTable:${dishesTableList}">
     <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">一号桌</span>
+    <span class="tableSpan" th:text="${dishesTable.name}">一号桌</span>
 </div>
-<div class="tableDiv" value="2" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">二号桌</span>
-</div>
-<div class="tableDiv" value="3" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">三号桌</span>
-</div>
-<div class="tableDiv" value="4" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">四号桌</span>
-</div>
-<div class="tableDiv" value="5" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">五号桌</span>
-</div>
-<div class="tableDiv" value="6" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">六号桌</span>
-</div>
-<div class="tableDiv" value="7" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">七号桌</span>
-</div>
-<div class="tableDiv" value="8" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">八号桌</span>
-</div>
-<div class="tableDiv" value="9" onclick="selectTable(this)">
-    <img th:src="@{/admin/images/table.png}" class="tableImg">
-    <span class="tableSpan">九号桌</span>
-</div>
+<!--<div class="tableDiv" value="2" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">二号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="3" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">三号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="4" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">四号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="5" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">五号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="6" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">六号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="7" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">七号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="8" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">八号桌</span>-->
+<!--</div>-->
+<!--<div class="tableDiv" value="9" onclick="selectTable(this)">-->
+<!--    <img th:src="@{/admin/images/table.png}" class="tableImg">-->
+<!--    <span class="tableSpan">九号桌</span>-->
+<!--</div>-->
+
 </body>
 <th:block th:include="include :: footer"/>
 <script th:inline="javascript">
@@ -47,7 +50,8 @@
     //选择餐桌进行开单
     function selectTable(event) {
         let tableId = $(event).attr("value");
-        console.log(tableId);
+        let dishesTableId = $(event).attr("dishesTableId");
+        console.log("tableId: " + tableId);
 
         layer.confirm('您确定在' + tableId + '号桌就餐么？', {icon: 1, title: '提示'}, function (index) {
             layer.close(index);
@@ -59,10 +63,15 @@
                     console.log(result);
                     if (result.success) {
                         layer.msg("开桌成功", {icon: 1, time: 1500}, function () {
+                            console.log("+++++++++++++++++++++++");
+                            console.log("开桌成功");
+                            console.log(result);
+                            console.log("+++++++++++++++++++++++");
+                            //获得开桌订单号
+                            $("#dishesId", window.parent.document).val(result.data);
                             let index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                             //关闭选桌窗口
                             parent.layer.close(index);
-                            $("#dishesId", window.parent.document).val(result.data);
                         });
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 1000});

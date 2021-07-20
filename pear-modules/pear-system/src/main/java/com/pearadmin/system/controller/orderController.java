@@ -133,6 +133,17 @@ public class OrderController extends BaseController {
     }
 
     /**
+     * 用户下单购物车展示
+     */
+    @ResponseBody
+    @PostMapping("/orderConfirmation")
+    public ModelAndView orderConfirmation(@RequestParam String[][] orderDishesList, ModelMap mmap) {
+        System.out.println(Arrays.asList(orderDishesList));
+        mmap.put("orderDishesList", orderDishesList);
+        return jumpPage(prefix + "/orderConfirmation");
+    }
+
+    /**
      * 用户订单下单
      */
     @ResponseBody

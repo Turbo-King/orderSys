@@ -114,6 +114,7 @@
             type: 2,
             title: '请选择餐桌',
             shade: 0.1,
+            closeBtn: 0,
             area: ['660px', '590px'],
             content: '/dishes/order/tableOrder'        //检查餐桌是否有顾客正在用餐
         });
@@ -225,25 +226,64 @@
 
     //提交下单请求
     function submitOrder() {
-        orderReference = $("#dishesId").attr("value");
-        layer.confirm('您确定下单么？', {icon: 1, title: '提示'}, function (index) {
-            layer.close(index);
-            $.ajax({
-                url: '/dishes/order/placeOrder',
-                type: 'POST',
-                data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
-                traditional: true,
-                success: function (result) {
-                    if (result.success) {
-                        layer.msg("下单成功", {icon: 1, time: 1500}, function () {
-                            location.reload();
-                        });
-                    } else {
-                        layer.msg(result.msg, {icon: 2, time: 1000});
-                    }
-                }
-            })
+        $.ajax({
+            type: 'POST',
+            url: '/dishes/order/orderConfirmation',//发送请求
+            data: {'orderDishesList': orderDishesList},
+            traditional: true,
+            success: function (result) {
+                let htmlCont = result;//返回的结果页面
+                layer.open({
+                    type: 1,//弹出框类型
+                    title: '点餐详情',
+                    shadeClose: 0.1,  //点击遮罩关闭层
+                    id: 'dishesOrder',  //设定一个id，防止重复弹出
+                    btn: ['确认下单', '取消下单'],
+                    btnAlign: 'c',
+                    area: ['550px', '570px'],
+                    content: htmlCont,//将结果页面放入layer弹出层中
+                    yes: function (index) {
+                        layer.close(index);
+                        orderReference = $("#dishesId").attr("value");
+                        $.ajax({
+                            url: '/dishes/order/placeOrder',
+                            type: 'POST',
+                            data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
+                            traditional: true,
+                            success: function (result) {
+                                if (result.success) {
+                                    layer.msg("下单成功", {icon: 1, time: 1500}, function () {
+                                        location.reload();
+                                    });
+                                } else {
+                                    layer.msg(result.msg, {icon: 2, time: 1000});
+                                }
+                            }
+                        })
+                    },
+                });
+            }
         });
+
+        // orderReference = $("#dishesId").attr("value");
+        // layer.confirm('您确定下单么？', {icon: 1, title: '提示'}, function (index) {
+        //     layer.close(index);
+        //     $.ajax({
+        //         url: '/dishes/order/placeOrder',
+        //         type: 'POST',
+        //         data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
+        //         traditional: true,
+        //         success: function (result) {
+        //             if (result.success) {
+        //                 layer.msg("下单成功", {icon: 1, time: 1500}, function () {
+        //                     location.reload();
+        //                 });
+        //             } else {
+        //                 layer.msg(result.msg, {icon: 2, time: 1000});
+        //             }
+        //         }
+        //     })
+        // });
     }
 
 

@@ -36,7 +36,7 @@ public class AlipayConfig {
         config.alipayPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiw5hK9rMYEulJ3S3tBcAu6zPBzeDUahXm+3RkBxllmqWbSFeOv64Tn+UrILeD0PfjvWi7wjksK/lvaEy4ZrEzZkrVPceqkHjIkt7Ql0cHlH3qTtPWWbk8fQiHSfrTcvSwxuTCoG2cOSHhhqW2dIcrjPDg9tOS8uSHQNCSk1hjQwPydN/zpQVt95uIfC41EHQCpTv7S6C5+d8en7RRSZWB43dX8EKuWoOCm/YyhgqWFtGOViVdRTz8P3sFVsZlociGR5n1shqIfo5mDOk6W+M+pvwoakDJZiS6Ilm/pDcounTZyrGb576ps0logO7CxgwKRuzqp3rBVAaszmSp0WEVwIDAQAB";
 
         //可设置异步通知接收服务地址（可选）
-        config.notifyUrl = "";
+        config.notifyUrl = "http://localhost:9999/dishes/customerBill/paySuccess";
 
         return config;
     }

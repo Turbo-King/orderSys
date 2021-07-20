@@ -1,18 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <th:block th:include="include :: header('支付成功用餐评分')"/>
     <meta charset="UTF-8">
     <title>支付成功</title>
 </head>
 <body>
 <div style="text-align: center">
     <h1 style="margin-top: 70px">餐桌结账成功</h1>
-    <svg style="width: 150px;height: 150px" t="1626663176709" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    <svg style="width: 150px;height: 150px" t="1626663176709" class="icon" viewBox="0 0 1024 1024" version="1.1"
+         xmlns="http://www.w3.org/2000/svg"
          p-id="1422" width="200" height="200">
         <path d="M512 1024C229.23264 1024 0 794.76736 0 512S229.23264 0 512 0s512 229.23264 512 512-229.23264 512-512 512zM283.92448 484.07552l-41.8816 55.84896 223.41632 209.4592 339.77344-386.32448-32.57344-37.24288-307.2 316.5184-181.53472-158.2592z"
               p-id="1423" fill="#1afa29"></path>
     </svg>
 </div>
 
+<div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;text-align: center">
+        <legend>感谢用餐，请您评分</legend>
+    </fieldset>
+
+    <div style="text-align:center">
+        <div class="scoreDiv">
+            <span>菜肴口味：</span>
+            <div id="score1"></div>
+        </div>
+        <div class="scoreDiv">
+            <span>餐厅环境：</span>
+            <div id="score2"></div>
+        </div>
+        <div class="scoreDiv">
+            <span>餐厅服务：</span>
+            <div id="score3"></div>
+        </div>
+        <div class="scoreDiv">
+            <span>上菜速度：</span>
+            <div id="score4"></div>
+        </div>
+        <div class="scoreDiv">
+            <span>总体体验：</span>
+            <div id="score5"></div>
+        </div>
+
+        <button class="layui-btn layui-btn-normal" onclick="submitScore()" style="margin-top: 10px">提交评分</button>
+    </div>
+</div>
+
+
+<th:block th:include="include :: footer"/>
+<script>
+    function submitScore() {
+        layer.confirm('确定提交评分么?', {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            layer.msg("感谢评分", {icon: 1, time: 1000});
+            setTimeout(function () {
+                window.close();
+            }, 1200);
+        });
+    }
+
+    layui.use(['rate'], function () {
+        let rate = layui.rate;
+        //自定义文本
+        rate.render({
+            elem: '#score1'
+            , value: 1
+            , text: true
+            , setText: function (value) { //自定义文本的回调
+                let arrs = {
+                    '1': '极差'
+                    , '2': '差'
+                    , '3': '中等'
+                    , '4': '好'
+                    , '5': '极好'
+                };
+                this.span.text(arrs[value] || (value + "星"));
+            }
+        })
+        rate.render({
+            elem: '#score2'
+            , value: 1
+            , text: true
+            , setText: function (value) { //自定义文本的回调
+                let arrs = {
+                    '1': '极差'
+                    , '2': '差'
+                    , '3': '中等'
+                    , '4': '好'
+                    , '5': '极好'
+                };
+                this.span.text(arrs[value] || (value + "星"));
+            }
+        })
+        rate.render({
+            elem: '#score3'
+            , value: 1
+            , text: true
+            , setText: function (value) { //自定义文本的回调
+                let arrs = {
+                    '1': '极差'
+                    , '2': '差'
+                    , '3': '中等'
+                    , '4': '好'
+                    , '5': '极好'
+                };
+                this.span.text(arrs[value] || (value + "星"));
+            }
+        })
+        rate.render({
+            elem: '#score4'
+            , value: 1
+            , text: true
+            , setText: function (value) { //自定义文本的回调
+                let arrs = {
+                    '1': '极差'
+                    , '2': '差'
+                    , '3': '中等'
+                    , '4': '好'
+                    , '5': '极好'
+                };
+                this.span.text(arrs[value] || (value + "星"));
+            }
+        })
+        rate.render({
+            elem: '#score5'
+            , value: 1
+            , text: true
+            , setText: function (value) { //自定义文本的回调
+                let arrs = {
+                    '1': '极差'
+                    , '2': '差'
+                    , '3': '中等'
+                    , '4': '好'
+                    , '5': '极好'
+                };
+                this.span.text(arrs[value] || (value + "星"));
+            }
+        })
+    });
+</script>
 </body>
 </html>

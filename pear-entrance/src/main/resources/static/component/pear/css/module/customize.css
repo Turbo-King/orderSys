@@ -61,3 +61,8 @@
     right: 30px;
     top: -0.5px;
 }
+
+/*评分界面展示*/
+.scoreDiv {
+    display: block;
+}

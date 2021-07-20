@@ -30,15 +30,8 @@ public class PayController extends BaseController {
 
     @GetMapping("/pay")
     public String pay(Long orderId, BigDecimal countPrice) throws IOException {
-        //订单详情
-        List<CustomerBill> customerBillList = null;
-        //订单总价
-        try {
-            customerBillList = customerBillService.selectcustomerBillById(orderId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String form = payService.toPay(countPrice, String.valueOf(customerBillList));
+        //调用支付宝进行支付
+        String form = payService.toPay(countPrice, String.valueOf(orderId));
 
         return form;
     }

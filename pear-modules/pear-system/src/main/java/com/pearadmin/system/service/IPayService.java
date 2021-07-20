@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  */
 public interface IPayService {
 
-    public String toPay(BigDecimal countPrice, String customerBillList);
+    public String toPay(BigDecimal countPrice, String orderId);
 
     public int insertAlipay(Alipay alipay);
 }

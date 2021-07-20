@@ -52,8 +52,8 @@
 <th:block th:include="include :: footer"/>
 <script>
     function disableButton(current) {
+        $(current).removeClass("pear-btn-primary");
         $(current).addClass("layui-btn-disabled").attr("disabled", true);
-
     }
 
     layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
@@ -122,7 +122,7 @@
             if (obj.event === 'remove') {
                 window.remove(obj);
                 disableButton(this);
-            }else if (obj.event === 'endCooking') {
+            } else if (obj.event === 'endCooking') {
                 window.endCooking(obj);
             }
         });

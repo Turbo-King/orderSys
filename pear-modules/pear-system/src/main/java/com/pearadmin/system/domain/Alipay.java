@@ -25,9 +25,9 @@ public class Alipay extends BaseDomain {
     private String payId;
 
     /**
-     * 支付详情
+     * 订单编号
      */
-    private String payDetails;
+    private String orderId;
 
     /**
      * 支付价格

@@ -30,12 +30,12 @@ public class PayServiceImpl implements IPayService {
      * 生成支付表单
      *
      * @param countPrice
-     * @param customerBillList
+     * @param orderId
      * @return
      * @throws Exception
      */
     @Override
-    public String toPay(BigDecimal countPrice, String customerBillList) {
+    public String toPay(BigDecimal countPrice, String orderId) {
         AlipayTradePagePayResponse pay = null;
         String payId = UUID.randomUUID().toString();
         try {
@@ -54,7 +54,7 @@ public class PayServiceImpl implements IPayService {
             alipay.setPayPrice(countPrice);
             alipay.setPayTime(LocalDateTime.now());
             alipay.setPayDesc("支付宝支付");
-            alipay.setPayDetails(customerBillList);
+            alipay.setOrderId(orderId);
             payMapper.insertAlipay(alipay);
         }
         return payForm;

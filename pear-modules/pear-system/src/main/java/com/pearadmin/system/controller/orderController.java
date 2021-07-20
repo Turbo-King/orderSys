@@ -187,6 +187,11 @@ public class OrderController extends BaseController {
     @DeleteMapping("/remove/{orderId}")
     @PreAuthorize("hasPermission('/dishes/order/remove','dishes:order:remove')")
     public Result remove(@PathVariable("orderId") Long orderId) {
+        DishesTable dishesTable = new DishesTable();
+        Order order = orderService.selectorderById(orderId);
+        dishesTable.setStatus(0);
+        dishesTable.setId(order.getTableId());
+        System.out.println(iDishesTableService.updateDishesTable(dishesTable) > 0 ? "退桌成功" : "退桌失败");
         return decide(orderService.deleteorderById(orderId));
     }
 }

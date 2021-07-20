@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:include="include :: header('顾客买单列表')"/>
-    <meta http-equiv="refresh" content="5">
+<!--    <meta http-equiv="refresh" content="10">-->
 </head>
 <body class="pear-container" name="divform">
 <div class="layui-card">
@@ -58,6 +58,9 @@
 </div>
 <th:block th:include="include :: footer"/>
 <script>
+    //每七秒刷新表格
+    setInterval('refresh()',7000);
+
     layui.use(['table', 'form', 'jquery', 'dictionary'], function () {
         let table = layui.table;
         let form = layui.form;

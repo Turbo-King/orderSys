@@ -4,7 +4,7 @@
 
 
     <insert id="insertAlipay" parameterType="com.pearadmin.system.domain.Alipay">
-        insert into `dishes_alipay`(pay_id, pay_details, pay_price, pay_time, pay_desc)
-        values (#{payId}, #{payDetails}, #{payPrice}, #{payTime}, #{payDesc})
+        insert into `dishes_alipay`(pay_id, order_id, pay_price, pay_time, pay_desc)
+        values (#{payId}, #{orderId}, #{payPrice}, #{payTime}, #{payDesc})
     </insert>
 </mapper>

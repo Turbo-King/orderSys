@@ -11,7 +11,7 @@ import com.pearadmin.system.domain.PrepareOrder;
  * @author wzh
  * @date 2021-07-05
  */
-public interface IprepareOrderService 
+public interface IPrepareOrderService
 {
     /**
      * 查询后厨备餐表

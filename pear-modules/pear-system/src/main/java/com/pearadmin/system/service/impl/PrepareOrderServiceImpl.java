@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pearadmin.system.mapper.PrepareOrderMapper;
 import com.pearadmin.system.domain.PrepareOrder;
-import com.pearadmin.system.service.IprepareOrderService;
+import com.pearadmin.system.service.IPrepareOrderService;
 
 /**
  * 后厨备餐表Service业务层处理
@@ -18,7 +18,7 @@ import com.pearadmin.system.service.IprepareOrderService;
  * @date 2021-07-05
  */
 @Service
-public class PrepareOrderServiceImpl implements IprepareOrderService
+public class PrepareOrderServiceImpl implements IPrepareOrderService
 {
     @Autowired
     private PrepareOrderMapper prepareOrderMapper;

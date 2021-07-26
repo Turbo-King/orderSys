@@ -11,13 +11,12 @@ import com.pearadmin.common.tools.secure.SecurityUtil;
 import com.pearadmin.system.domain.DishesTable;
 import com.pearadmin.system.domain.SysUser;
 import com.pearadmin.system.service.IDishesTableService;
-import com.pearadmin.system.service.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import com.pearadmin.system.service.IcustomerBillService;
+import com.pearadmin.system.service.ICustomerBillService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -35,7 +34,7 @@ public class CustomerBillController extends BaseController {
     private String prefix = "dishes/customerBill";
 
     @Autowired
-    private IcustomerBillService customerBillService;
+    private ICustomerBillService customerBillService;
     @Autowired
     private IDishesTableService iDishesTableService;
 

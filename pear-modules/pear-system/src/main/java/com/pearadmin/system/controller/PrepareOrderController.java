@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import com.pearadmin.system.service.IprepareOrderService;
+import com.pearadmin.system.service.IPrepareOrderService;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +31,7 @@ public class PrepareOrderController extends BaseController
     private String prefix = "dishes/prepareOrder";
 
     @Autowired
-    private IprepareOrderService prepareOrderService;
+    private IPrepareOrderService prepareOrderService;
 
     @GetMapping("/main")
     @PreAuthorize("hasPermission('/dishes/prepareOrder/main','dishes:prepareOrder:main')")

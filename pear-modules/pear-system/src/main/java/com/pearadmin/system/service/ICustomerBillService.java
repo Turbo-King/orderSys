@@ -12,7 +12,7 @@ import com.pearadmin.system.domain.CustomerBill;
  * @author wzh
  * @date 2021-07-06
  */
-public interface IcustomerBillService {
+public interface ICustomerBillService {
     /**
      * 查询顾客买单
      *

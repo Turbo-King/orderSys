@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pearadmin.system.mapper.CustomerBillMapper;
 import com.pearadmin.system.domain.CustomerBill;
-import com.pearadmin.system.service.IcustomerBillService;
+import com.pearadmin.system.service.ICustomerBillService;
 
 /**
  * 顾客买单Service业务层处理
@@ -18,7 +18,7 @@ import com.pearadmin.system.service.IcustomerBillService;
  * @date 2021-07-06
  */
 @Service
-public class CustomerBillServiceImpl implements IcustomerBillService {
+public class CustomerBillServiceImpl implements ICustomerBillService {
     @Autowired
     private CustomerBillMapper customerBillMapper;
 

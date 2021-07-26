@@ -10,7 +10,7 @@ import com.pearadmin.common.web.domain.response.module.ResultTable;
 import com.pearadmin.common.tools.secure.SecurityUtil;
 import com.pearadmin.system.service.IDishesFoodService;
 import com.pearadmin.system.service.IDishesTableService;
-import com.pearadmin.system.service.IprepareOrderService;
+import com.pearadmin.system.service.IPrepareOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
@@ -37,7 +37,7 @@ public class OrderController extends BaseController {
     @Autowired
     private IDishesFoodService iDishesFoodService;
     @Autowired
-    private IprepareOrderService iprepareOrderService;
+    private IPrepareOrderService iprepareOrderService;
     @Autowired
     private IDishesTableService iDishesTableService;
 

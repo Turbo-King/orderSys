@@ -1,15 +1,13 @@
 package com.pearadmin.system.controller;
 
 import com.pearadmin.common.web.base.BaseController;
-import com.pearadmin.system.domain.CustomerBill;
 import com.pearadmin.system.service.IPayService;
-import com.pearadmin.system.service.IcustomerBillService;
+import com.pearadmin.system.service.ICustomerBillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -25,7 +23,7 @@ public class PayController extends BaseController {
     @Autowired
     private IPayService payService;
     @Autowired
-    private IcustomerBillService customerBillService;
+    private ICustomerBillService customerBillService;
     private String prefix = "dishes/alipay";
 
     @GetMapping("/pay")

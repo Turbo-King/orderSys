@@ -61,13 +61,15 @@ public class CustomerBillController extends BaseController {
         return pageTable(pageInfo.getList(), pageInfo.getTotal());
     }
 
+
     /**
-     * 新增顾客买单
+     * 查询顾客买单列表
      */
-    @GetMapping("/add")
-    @PreAuthorize("hasPermission('/dishes/customerBill/add','dishes:customerBill:add')")
-    public ModelAndView add() {
-        return jumpPage(prefix + "/add");
+    @ResponseBody
+    @GetMapping("/haha")
+    public List<CustomerBill> data(@ModelAttribute CustomerBill customerBill) {
+        List<CustomerBill> customerBillList = customerBillService.selectcustomerBillList(customerBill);
+        return customerBillList;
     }
 
     /**

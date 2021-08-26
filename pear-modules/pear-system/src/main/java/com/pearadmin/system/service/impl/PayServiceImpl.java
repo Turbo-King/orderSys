@@ -40,7 +40,8 @@ public class PayServiceImpl implements IPayService {
         String payId = UUID.randomUUID().toString();
         try {
             pay = Factory.Payment.Page().pay("菜品结账", payId,
-                    String.valueOf(countPrice), "http://localhost:9999/dishes/customerBill/paySuccess");
+//                    String.valueOf(countPrice), "http://localhost:9999/dishes/customerBill/paySuccess");
+                    String.valueOf(countPrice), "http://order.ntvu.club/dishes/customerBill/paySuccess");
         } catch (Exception e) {
             e.printStackTrace();
         }

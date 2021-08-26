@@ -127,18 +127,18 @@ public class OrderController extends BaseController {
     @ResponseBody
     @PostMapping("/orderDishes")
     public ModelAndView orderDetails(@RequestParam String[][] orderDishesList, ModelMap mmap) {
-        System.out.println(Arrays.asList(orderDishesList));
+//        System.out.println(Arrays.asList(orderDishesList));
         mmap.put("orderDishesList", orderDishesList);
         return jumpPage(prefix + "/orderDetails");
     }
 
     /**
-     * 用户下单购物车展示
+     * 用户下单确认
      */
     @ResponseBody
     @PostMapping("/orderConfirmation")
     public ModelAndView orderConfirmation(@RequestParam String[][] orderDishesList, ModelMap mmap) {
-        System.out.println(Arrays.asList(orderDishesList));
+//        System.out.println(Arrays.asList(orderDishesList));
         mmap.put("orderDishesList", orderDishesList);
         return jumpPage(prefix + "/orderConfirmation");
     }
@@ -152,6 +152,7 @@ public class OrderController extends BaseController {
         int sucess = 0;
         PrepareOrder prepareOrder = new PrepareOrder();
         for (String[] str : DishesOrderDetail) {
+            System.out.println(Arrays.asList(str));
             prepareOrder.setDishes(Long.valueOf(str[0]));
             prepareOrder.setNum(Long.valueOf(str[1]));
             prepareOrder.setOrderReference(Long.valueOf(orderReference));
@@ -173,7 +174,7 @@ public class OrderController extends BaseController {
         dishesTable.setId(tableId);
         dishesTable.setStatus(1);
         order.setOrderBeginTime(new Date());
-        order.setWaiterId("1309861917694623744");
+        order.setWaiterId(((SysUser) SecurityUtil.currentUserObj()).getUserId());
         order.setOrderState(0);
         order.setTableId(tableId);
         sucess = orderService.insertorder(order);

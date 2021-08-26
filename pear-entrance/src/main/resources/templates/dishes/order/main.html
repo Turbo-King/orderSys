@@ -102,6 +102,7 @@
 <script>
     //购物车
     let orderDishesList = [];
+    orderDishesList.push(["菜品编号","菜品","单价","数量","操作"])
     //点餐具体
     let DishesOrderDetail = [];
     //订单编号
@@ -109,7 +110,7 @@
 
     //弹出框选择餐桌
     window.onload = function () {
-        console.log("测试餐桌选择界面弹出");
+        // console.log("测试餐桌选择界面弹出");
         layer.open({
             type: 2,
             title: '请选择餐桌',
@@ -170,7 +171,7 @@
         orderDishesList.push(orderDishes);
         layer.msg('菜品加入成功！', {icon: 1, time: 1000});
         //判断购物车是否有订单
-        if (orderDishesList.length !== 0) {
+        if (orderDishesList.length !== 1) {
             $('#shoppingCart').css('display', 'inline-block');
         }
         console.log(orderDishesList);
@@ -208,6 +209,8 @@
                 });
             }
         });
+
+
     }
 
     //减菜
@@ -226,44 +229,49 @@
 
     //提交下单请求
     function submitOrder() {
-        $.ajax({
-            type: 'POST',
-            url: '/dishes/order/orderConfirmation',//发送请求
-            data: {'orderDishesList': orderDishesList},
-            traditional: true,
-            success: function (result) {
-                let htmlCont = result;//返回的结果页面
-                layer.open({
-                    type: 1,//弹出框类型
-                    title: '点餐详情',
-                    shadeClose: 0.1,  //点击遮罩关闭层
-                    id: 'dishesOrder',  //设定一个id，防止重复弹出
-                    btn: ['确认下单', '取消下单'],
-                    btnAlign: 'c',
-                    area: ['550px', '570px'],
-                    content: htmlCont,//将结果页面放入layer弹出层中
-                    yes: function (index) {
-                        layer.close(index);
-                        orderReference = $("#dishesId").attr("value");
-                        $.ajax({
-                            url: '/dishes/order/placeOrder',
-                            type: 'POST',
-                            data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
-                            traditional: true,
-                            success: function (result) {
-                                if (result.success) {
-                                    layer.msg("下单成功", {icon: 1, time: 1500}, function () {
-                                        location.reload();
-                                    });
-                                } else {
-                                    layer.msg(result.msg, {icon: 2, time: 1000});
+        if (orderDishesList.length === 1) {
+            layer.msg('你一道菜都没点哦', {icon: 2});
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/dishes/order/orderConfirmation',//发送请求
+                data: {'orderDishesList': orderDishesList},
+                traditional: true,
+                success: function (result) {
+                    let htmlCont = result;//返回的结果页面
+                    console.log(DishesOrderDetail)
+                    layer.open({
+                        type: 1,//弹出框类型
+                        title: '点餐详情',
+                        shadeClose: 0.1,  //点击遮罩关闭层
+                        id: 'dishesOrder',  //设定一个id，防止重复弹出
+                        btn: ['确认下单', '取消下单'],
+                        btnAlign: 'c',
+                        area: ['550px', '570px'],
+                        content: htmlCont,//将结果页面放入layer弹出层中
+                        yes: function (index) {
+                            layer.close(index);
+                            orderReference = $("#dishesId").attr("value");
+                            $.ajax({
+                                url: '/dishes/order/placeOrder',
+                                type: 'POST',
+                                data: {'DishesOrderDetail': DishesOrderDetail, 'orderReference': orderReference},
+                                traditional: true,
+                                success: function (result) {
+                                    if (result.success) {
+                                        layer.msg("下单成功", {icon: 1, time: 1500}, function () {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        layer.msg(result.msg, {icon: 2, time: 1000});
+                                    }
                                 }
-                            }
-                        })
-                    },
-                });
-            }
-        });
+                            })
+                        },
+                    });
+                }
+            });
+        }
 
         // orderReference = $("#dishesId").attr("value");
         // layer.confirm('您确定下单么？', {icon: 1, title: '提示'}, function (index) {

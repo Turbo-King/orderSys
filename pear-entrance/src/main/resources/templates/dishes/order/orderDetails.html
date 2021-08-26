@@ -15,14 +15,17 @@
 
             <thead>
             <tr>
+                <th>菜品编号</th>
                 <th>菜品</th>
                 <th>单价</th>
                 <th>数量</th>
                 <th>操作</th>
             </tr>
             </thead>
-            <tbody th:each="orderDishes:${orderDishesList}">
-            <tr>
+            <tbody th:each="orderDishes,status:${orderDishesList}">
+            <tr th:if="${status.index}!=0">
+                <!--                <th th:each="list:${orderDishes}" th:text="${list}"></th>-->
+                <th th:text="${orderDishes[0]}"></th>
                 <th th:text="${orderDishes[1]}"></th>
                 <th th:text="${orderDishes[2]}"></th>
                 <th th:text="${orderDishes[3]}"></th>
